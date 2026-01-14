@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant browser
+    participant server
+    
+    Note right of browser: The POST request contains the new note as JSON data
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    activate server
+    Note left of server: Server appends new note to data.json
+    server-->>browser: HTTP 201 Created (JSON: {content: "test", date: "2026-01-14T10:16:29.550Z"})
+    deactivate server
+
+    Note right of browser: The JS callback adds the new note to the list on the screen (DOM manipulation)
+    
+    
+   
