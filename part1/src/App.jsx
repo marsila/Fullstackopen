@@ -4,7 +4,7 @@ import Total from "./components/Total";
 
 function App() {
   const course = 'Half Stack application development'
-  const part1 = {
+ const part1 = {
     name: 'Fundamentals of React',
     exercises: 10
   }
@@ -17,21 +17,17 @@ function App() {
     exercises: 14
   }
 
+
   return (
     <div>
       <Header course={course} />
       <Content
-        part1={part1.name}
-        part2={part2.name}
-        part3={part3.name}
-        exercises1={part1.exercises}
-        exercises2={part2.exercises}
-        exercises3={part3.exercises}
+        part1={part1}
+        part2={part2}
+        part3={part3}
       />
       <Total 
-        exercises1={part1.exercises}
-        exercises2={part2.exercises}
-        exercises3={part3.exercises}
+        exercises={[part1.exercises,part2.exercises,part3.exercises]}
       />
     </div>
   );
