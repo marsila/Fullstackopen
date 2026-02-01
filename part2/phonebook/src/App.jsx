@@ -1,22 +1,31 @@
 import { useState } from "react";
+import axios from "axios";
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
+import { useEffect } from "react";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ]);
+
+  const [persons, setPersons] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then((response) => {
+        console.log('promise fulfilled')
+        const persons = response.data;
+        console.log("Persons", persons);
+        setPersons(persons)
+      });
+  }, []);
+  
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filteredNames, setFilteredNames] = useState("");
 
   const handleFilteredNames = (event) => {
     const name = event.target.value;
-    console.log("filter", name);
+    //console.log("filter", name);
     setFilteredNames(name);
   };
   const personsToShow =
@@ -45,16 +54,17 @@ const App = () => {
     if (nameExists) {
       alert(`${newName} is already added to the phonebook`);
     } else {
-      if(newName ===''|| newNumber ===''){
-        alert(`Please fill the empty fields!`)
-      }else{
-      const personObject = { name: newName, phoneNumber: newNumber };
-      setPersons((prev) => [...prev, personObject]);
-      setNewName("");
-      setNewNumber("");
-    }}
+      if (newName === "" || newNumber === "") {
+        alert(`Please fill the empty fields!`);
+      } else {
+        const personObject = { name: newName, number: newNumber };
+        setPersons((prev) => [...prev, personObject]);
+        setNewName("");
+        setNewNumber("");
+      }
+    }
   };
-  
+
   return (
     <div>
       <h2>Phonebook</h2>

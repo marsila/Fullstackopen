@@ -3,7 +3,7 @@ const Persons =({personsToShow}) => {
     <div>
         {personsToShow.map((person) => (
         <p key={person.name}>
-          {person.name} : {person.phoneNumber}
+          {person.name} : {person.number}
         </p>
       ))}
     </div>
