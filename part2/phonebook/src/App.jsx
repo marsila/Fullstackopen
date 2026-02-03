@@ -42,20 +42,36 @@ const App = () => {
     const nameExists = persons.find(
       (person) => person.name.toLowerCase() === newName.toLowerCase(),
     );
-    
+
     if (nameExists) {
-      alert(`${newName} is already added to the phonebook`);
-    } else {
-      if (newName === "" || newNumber === "") {
-        alert(`Please fill the empty fields!`);
-      } else {
-        const personObject = { name: newName, number: newNumber };
-        personsService.create(personObject).then((createdPerson) => {
-          setPersons((prev) => [...prev, createdPerson]);
-          setNewName("");
-          setNewNumber("");
-        });
+      const confirmUpdate = window.confirm(
+        `"${newName}" is already added to the phonebook! 
+        Do you want to replace the old number with the new one?`,
+      );
+      if (confirmUpdate) {
+        const updatedPerson = { ...nameExists, number: newNumber };
+        console.log("update", nameExists.id);
+        personsService
+          .update(nameExists.id, updatedPerson)
+          .then((returnedPerson) =>
+            setPersons(
+              persons.map((person) =>
+                person.id === nameExists.id ? returnedPerson : person,
+              ),
+            ),
+          )
+          .catch((error) => alert(`Somthing went wrong ${error}`));
       }
+    }
+    if (newName === "" || newNumber === "") {
+      alert(`Please fill the empty fields!`);
+    } else {
+      const personObject = { name: newName, number: newNumber };
+      personsService.create(personObject).then((createdPerson) => {
+        setPersons((prev) => [...prev, createdPerson]);
+        setNewName("");
+        setNewNumber("");
+      });
     }
   };
 
@@ -69,7 +85,8 @@ const App = () => {
         .remove(id)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
-        });
+        })
+        .catch((error) => alert(`Couldn't delete the contact:${error}`));
   };
 
   return (
