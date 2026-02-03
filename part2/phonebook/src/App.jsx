@@ -3,15 +3,13 @@ import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
 import { useEffect } from "react";
-import personsService from "./services/persons"
+import personsService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
 
   useEffect(() => {
-    personsService
-      .getAll()
-      .then(intialPersons => setPersons(intialPersons) )
+    personsService.getAll().then((intialPersons) => setPersons(intialPersons));
   }, []);
 
   const [newName, setNewName] = useState("");
@@ -20,7 +18,6 @@ const App = () => {
 
   const handleFilteredNames = (event) => {
     const name = event.target.value;
-    //console.log("filter", name);
     setFilteredNames(name);
   };
   const personsToShow =
@@ -45,7 +42,7 @@ const App = () => {
     const nameExists = persons.find(
       (person) => person.name.toLowerCase() === newName.toLowerCase(),
     );
-    console.log("is there:", nameExists);
+    
     if (nameExists) {
       alert(`${newName} is already added to the phonebook`);
     } else {
@@ -53,16 +50,26 @@ const App = () => {
         alert(`Please fill the empty fields!`);
       } else {
         const personObject = { name: newName, number: newNumber };
-        personsService
-          .create(personObject)
-          .then(createdPerson => {
-            console.log("post res ", createdPerson);
-            setPersons((prev) => [...prev, createdPerson]);
-            setNewName("");
-            setNewNumber("");
-          });
+        personsService.create(personObject).then((createdPerson) => {
+          setPersons((prev) => [...prev, createdPerson]);
+          setNewName("");
+          setNewNumber("");
+        });
       }
     }
+  };
+
+  const removePerson = (id) => {
+    console.log("id", id);
+    const toRemove = persons.find((person) => person.id === id);
+    window.confirm(
+      `Are you sure you want to remove "${toRemove.name}" from your contacts?`,
+    ) &&
+      personsService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id));
+        });
   };
 
   return (
@@ -81,7 +88,7 @@ const App = () => {
         handleNewNumber={handleNewNumber}
       />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} removePerson={removePerson} />
     </div>
   );
 };
