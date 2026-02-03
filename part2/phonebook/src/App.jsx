@@ -6,19 +6,16 @@ import Persons from "./Persons";
 import { useEffect } from "react";
 
 const App = () => {
-
   const [persons, setPersons] = useState([]);
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((response) => {
-        console.log('promise fulfilled')
-        const persons = response.data;
-        console.log("Persons", persons);
-        setPersons(persons)
-      });
+    axios.get("http://localhost:3001/persons").then((response) => {
+      console.log("promise fulfilled");
+      const persons = response.data;
+      console.log("Persons", persons);
+      setPersons(persons);
+    });
   }, []);
-  
+
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filteredNames, setFilteredNames] = useState("");
@@ -58,9 +55,14 @@ const App = () => {
         alert(`Please fill the empty fields!`);
       } else {
         const personObject = { name: newName, number: newNumber };
-        setPersons((prev) => [...prev, personObject]);
-        setNewName("");
-        setNewNumber("");
+        axios
+          .post("http://localhost:3001/persons", personObject)
+          .then((response) => {
+            console.log("post res ", response);
+            setPersons((prev) => [...prev, personObject]);
+            setNewName("");
+            setNewNumber("");
+          });
       }
     }
   };
