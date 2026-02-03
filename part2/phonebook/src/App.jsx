@@ -1,19 +1,17 @@
 import { useState } from "react";
-import axios from "axios";
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
 import { useEffect } from "react";
+import personsService from "./services/persons"
 
 const App = () => {
   const [persons, setPersons] = useState([]);
+
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      console.log("promise fulfilled");
-      const persons = response.data;
-      console.log("Persons", persons);
-      setPersons(persons);
-    });
+    personsService
+      .getAll()
+      .then(intialPersons => setPersons(intialPersons) )
   }, []);
 
   const [newName, setNewName] = useState("");
@@ -55,11 +53,11 @@ const App = () => {
         alert(`Please fill the empty fields!`);
       } else {
         const personObject = { name: newName, number: newNumber };
-        axios
-          .post("http://localhost:3001/persons", personObject)
-          .then((response) => {
-            console.log("post res ", response);
-            setPersons((prev) => [...prev, personObject]);
+        personsService
+          .create(personObject)
+          .then(createdPerson => {
+            console.log("post res ", createdPerson);
+            setPersons((prev) => [...prev, createdPerson]);
             setNewName("");
             setNewNumber("");
           });
