@@ -4,9 +4,11 @@ import PersonForm from "./PersonForm";
 import Persons from "./Persons";
 import { useEffect } from "react";
 import personsService from "./services/persons";
+import Notifications from "./Notifications";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personsService.getAll().then((intialPersons) => setPersons(intialPersons));
@@ -42,37 +44,52 @@ const App = () => {
     const nameExists = persons.find(
       (person) => person.name.toLowerCase() === newName.toLowerCase(),
     );
-
+    //check if person exists
     if (nameExists) {
       const confirmUpdate = window.confirm(
         `"${newName}" is already added to the phonebook! 
         Do you want to replace the old number with the new one?`,
       );
+
+      //update the number of existing person
       if (confirmUpdate) {
         const updatedPerson = { ...nameExists, number: newNumber };
-        console.log("update", nameExists.id);
+
         personsService
           .update(nameExists.id, updatedPerson)
-          .then((returnedPerson) =>
+          .then((returnedPerson) => {
             setPersons(
               persons.map((person) =>
                 person.id === nameExists.id ? returnedPerson : person,
               ),
-            ),
-          )
+            );
+            setMessage(`${nameExists.name} number was updated`);
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
+            setNewName("");
+            setNewNumber("");
+          })
           .catch((error) => alert(`Somthing went wrong ${error}`));
       }
+      return;
     }
+    // check for empty fields
     if (newName === "" || newNumber === "") {
       alert(`Please fill the empty fields!`);
-    } else {
-      const personObject = { name: newName, number: newNumber };
-      personsService.create(personObject).then((createdPerson) => {
-        setPersons((prev) => [...prev, createdPerson]);
-        setNewName("");
-        setNewNumber("");
-      });
+      return;
     }
+    //Add new person
+    const personObject = { name: newName, number: newNumber };
+    personsService.create(personObject).then((createdPerson) => {
+      setPersons((prev) => [...prev, createdPerson]);      
+      setMessage(`${createdPerson.name} was Added`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+      setNewName("");
+      setNewNumber("");
+    });
   };
 
   const removePerson = (id) => {
@@ -92,6 +109,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notifications message={message} />
       <Filter
         filteredNames={filteredNames}
         handleFilteredNames={handleFilteredNames}
