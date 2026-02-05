@@ -1,10 +1,18 @@
+.notification {
+  border-radius: 3px;
+  font-weight: 600;
+  padding: 5px;
+  margin: 5px;
+}
 
-.notification{
-    border: 2px solid green;
-    color: green;
-    border-radius: 3px;
-    font-weight: 600;
-    padding: 5px;
-    margin: 5px;
-    background-color: rgb(219, 223, 223);
+.error {
+  border: 2px solid red;
+  color: red;
+  background-color: rgb(252, 229, 240);
+}
+
+.success {
+  border: 2px solid green;
+  color: green;
+  background-color: rgb(219, 223, 223);
 }

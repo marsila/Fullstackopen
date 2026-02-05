@@ -63,14 +63,26 @@ const App = () => {
                 person.id === nameExists.id ? returnedPerson : person,
               ),
             );
-            setMessage(`${nameExists.name} number was updated`);
+            setMessage({
+              text: `${nameExists.name} number was updated`,
+              type: "success",
+            });
             setTimeout(() => {
               setMessage(null);
             }, 5000);
             setNewName("");
             setNewNumber("");
           })
-          .catch((error) => alert(`Somthing went wrong ${error}`));
+          .catch((error) => {
+            setMessage({
+              text: `Information of ${nameExists.name} has already been removed from server`,
+              type: "error",
+            });
+            setPersons(persons.filter((p) => p.id !== nameExists.id));
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
+          });
       }
       return;
     }
@@ -82,8 +94,8 @@ const App = () => {
     //Add new person
     const personObject = { name: newName, number: newNumber };
     personsService.create(personObject).then((createdPerson) => {
-      setPersons((prev) => [...prev, createdPerson]);      
-      setMessage(`${createdPerson.name} was Added`);
+      setPersons((prev) => [...prev, createdPerson]);
+      setMessage({ text: `${createdPerson.name} was Added`, type: "success" });
       setTimeout(() => {
         setMessage(null);
       }, 5000);
@@ -103,7 +115,16 @@ const App = () => {
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
         })
-        .catch((error) => alert(`Couldn't delete the contact:${error}`));
+        .catch((error) => {
+          setMessage({
+            text: `The person '${toRemove.name}' was already deleted from server`,
+            type: "error",
+          });
+          setPersons(persons.filter((p) => p.id !== id));
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        });
   };
 
   return (
