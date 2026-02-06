@@ -6,6 +6,7 @@ import SearchResult from "./components/searchResult";
 function App() {
   const [allCountries, setAllCountries] = useState([]);
   const [inputSearch, setInputSearch] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(null)
 
   useEffect(() => {
     axios
@@ -19,14 +20,18 @@ function App() {
   const handleInputChange = (event) => {    
     const inputValue = event.target.value;
     setInputSearch(inputValue);
+    setSelectedCountry(null);
   };
 
   const toShow = allCountries.filter((country) =>
     country.name.common.toLowerCase().includes(inputSearch.toLowerCase()),
   );
-  console.log("to show", toShow);
+  //console.log("to show", toShow);
 
-  
+  const showCountryDetails= (country) => {
+    setSelectedCountry(country);
+  }
+
   return (
     <>
       <h1>Countries App</h1>
@@ -34,6 +39,8 @@ function App() {
       <SearchResult
         inputSearch={inputSearch}
         toShow={toShow}
+        showCountryDetails={showCountryDetails}
+        selectedCountry={selectedCountry}
       />
     </>
   );
