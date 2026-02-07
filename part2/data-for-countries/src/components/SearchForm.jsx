@@ -1,4 +1,4 @@
-const SerachForm = ({ handleInputChange }) => {
+const SearchForm = ({ handleInputChange }) => {
   return (
     <form>
       <div>
@@ -8,4 +8,4 @@ const SerachForm = ({ handleInputChange }) => {
     </form>
   );
 };
-export default SerachForm;
+export default SearchForm;

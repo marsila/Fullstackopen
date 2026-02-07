@@ -3,10 +3,13 @@ import axios from "axios";
 import "./index.css";
 import SearchForm from "./components/searchForm";
 import SearchResult from "./components/searchResult";
+
 function App() {
+
   const [allCountries, setAllCountries] = useState([]);
   const [inputSearch, setInputSearch] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState(null)
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [weather, setWeather] = useState(null);
 
   useEffect(() => {
     axios
@@ -17,7 +20,7 @@ function App() {
       });
   }, []);
 
-  const handleInputChange = (event) => {    
+  const handleInputChange = (event) => {
     const inputValue = event.target.value;
     setInputSearch(inputValue);
     setSelectedCountry(null);
@@ -26,11 +29,26 @@ function App() {
   const toShow = allCountries.filter((country) =>
     country.name.common.toLowerCase().includes(inputSearch.toLowerCase()),
   );
-  //console.log("to show", toShow);
+  
+  const targetCountry = selectedCountry || (toShow.length===1 ? toShow[0] : null);
 
-  const showCountryDetails= (country) => {
+  useEffect(() => {
+    if (targetCountry) {
+      const capital = targetCountry.capital[0];
+      const api_key = import.meta.env.VITE_WEATHER_API_KEY;
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`,
+        )
+        .then((response) => setWeather(response.data));
+    }else{
+      setWeather(null)
+    }
+  }, [targetCountry]);
+
+  const showCountryDetails = (country) => {
     setSelectedCountry(country);
-  }
+  };
 
   return (
     <>
@@ -41,6 +59,8 @@ function App() {
         toShow={toShow}
         showCountryDetails={showCountryDetails}
         selectedCountry={selectedCountry}
+        targetCountry={targetCountry}
+        weather={weather}
       />
     </>
   );

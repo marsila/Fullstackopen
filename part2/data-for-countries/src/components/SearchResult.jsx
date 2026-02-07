@@ -4,7 +4,8 @@ const SearchResult = ({
   inputSearch,
   toShow,
   showCountryDetails,
-  selectedCountry,
+  targetCountry,
+  weather,
 }) => {
   return (
     <div>
@@ -12,14 +13,12 @@ const SearchResult = ({
         <p>Type a name to search for</p>
       ) : (
         <>
-          {selectedCountry ? (
-            <CountryDetails country={selectedCountry} />
+          {targetCountry? (
+            <CountryDetails country={targetCountry} weather={weather}/>
           ) : toShow.length === 0 ? (
             <p>No match! </p>
           ) : toShow.length > 10 ? (
             <p>Too many matches, specify another filter</p>
-          ) : toShow.length === 1 ? (
-            <CountryDetails country={toShow[0]} />
           ) : (
             <ul>
               {toShow.map((country) => (
