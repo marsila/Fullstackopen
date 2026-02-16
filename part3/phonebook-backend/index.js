@@ -25,6 +25,8 @@ let persons =[
     }
 ];
 
+app.use(express.json());
+
 app.get('/',(request,response)=>{
     response.send('<h1>PhoneBook App</h1>');
 })
@@ -40,7 +42,6 @@ app.get('/info',(request, response)=> {
         <p>phonebook has info for ${people} people</p>
         <p>${currentDate}</p>
     `);
-    console.log('date',date);
 })
 
 app.get('/api/persons/:id',(request,response)=>{
@@ -49,6 +50,12 @@ app.get('/api/persons/:id',(request,response)=>{
     person?
         response.json(person) :
         response.status(404).send('The id was not found! Please try another id')
+})
+
+app.delete('/api/persons/:id', (request,response) => {
+    const id = request.params.id;
+    persons = persons.filter(p=> p.id !== id);
+    response.status(204).end();
 })
 
 app.listen(PORT, ()=> {
