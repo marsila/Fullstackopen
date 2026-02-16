@@ -43,6 +43,14 @@ app.get('/info',(request, response)=> {
     console.log('date',date);
 })
 
+app.get('/api/persons/:id',(request,response)=>{
+    const id = request.params.id;
+    const person = persons.find(person => person.id === id);
+    person?
+        response.json(person) :
+        response.status(404).send('The id was not found! Please try another id')
+})
+
 app.listen(PORT, ()=> {
     console.log(`server open on port ${PORT}`);
     
