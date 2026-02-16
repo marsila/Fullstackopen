@@ -40,6 +40,7 @@ const App = () => {
   };
   const maxVotesIndex = findMax();
 
+
   return (
     <>
       <div>
