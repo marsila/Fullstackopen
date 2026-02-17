@@ -5,3 +5,30 @@ Content-Type: application/json
     "name" : "Adam Balck",
     "number" :"12-33-187281"
 }
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name" : "Dan Abramov",
+    "number" : "12-33-18989"
+}
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name" : "",
+    "number": "0877323"
+}
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name" : "Jack A",
+    "number": ""
+}
