@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT = PORT || 3001;
 
 let persons = [
     {
@@ -27,7 +27,10 @@ let persons = [
 ];
 
 app.use(express.json());
-app.use(morgan('tiny'))
+
+morgan.token('body', function (req, res) { return JSON.stringify(req.body) });
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 app.get('/', (request, response) => {
     response.send('<h1>PhoneBook App</h1>');
@@ -73,6 +76,7 @@ app.post('/api/persons', (request, response) => {
             error: "name must be uniqe"
         })
     };
+
     const person = {
         id: String(Math.floor(Math.random() * 10000)),
         name: body.name,
