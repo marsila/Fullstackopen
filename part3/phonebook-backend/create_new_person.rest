@@ -32,3 +32,15 @@ Content-Type: application/json
     "name" : "Jack A",
     "number": ""
 }
+
+###
+POST https://fullstackopenphonebook-3fa3.onrender.com/api/persons
+Content-Type: application/json
+
+{
+    "name" : "Adam Balck",
+    "number" :"12-33-187281"
+}
+
+###
+GET https://fullstackopenphonebook-3fa3.onrender.com/
