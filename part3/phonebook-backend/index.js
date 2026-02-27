@@ -42,6 +42,18 @@ app.post('/api/persons', (request, response) => {
     })
 })
 
+app.delete('/api/persons/:id', (request,response)=> {
+    Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+        console.log('result:',result);        
+        response.status(204).end();
+    })
+    .catch(error => {
+        console.log(error);
+        response.status(400).send({error:'malformatted id'})
+    })
+})
+
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`server open on port ${PORT}`);
