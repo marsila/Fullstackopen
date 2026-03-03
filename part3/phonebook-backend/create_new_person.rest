@@ -42,5 +42,3 @@ Content-Type: application/json
     "number" :"12-33-187281"
 }
 
-###
-GET https://fullstackopenphonebook-3fa3.onrender.com/

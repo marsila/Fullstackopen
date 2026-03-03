@@ -1,0 +1,10 @@
+GET http://localhost:3001/api/persons
+###
+GET http://localhost:3001/api/persons/69a0423eb718a40cf2b7b8bd
+###
+GET https://fullstackopenphonebook-3fa3.onrender.com/
+
+###
+GET https://fullstackopenphonebook-3fa3.onrender.com/api/persons/69a0423eb718a40cf2b7b8bd
+###
+GET http://localhost:3001/info

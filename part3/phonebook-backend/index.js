@@ -35,6 +35,17 @@ app.get('/api/persons/:id', (request, response, next) => {
         .catch(error => next(error))
 })
 
+app.get('/info', (request, response, next) => {
+  Person.countDocuments({})
+    .then(count => {
+      response.send(`
+        <p>Phonebook has info for ${count} people</p>
+        <p>${new Date()}</p>
+      `)
+    })
+    .catch(error => next(error))
+})
+
 app.post('/api/persons', (request, response, next) => {
     const body = request.body;
     if (!body.name || !body.number) {
