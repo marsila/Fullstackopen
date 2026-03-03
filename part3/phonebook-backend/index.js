@@ -32,7 +32,7 @@ app.get('/api/persons/:id', (request, response, next) => {
                 response.status(404).end()
             }
         })
-        .catch(error => next(error)) 
+        .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response, next) => {
@@ -52,6 +52,27 @@ app.post('/api/persons', (request, response, next) => {
             console.log('added new person ', person);
         })
         .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body;
+    Person.findById(request.params.id)
+        .then(person => {
+            if (person) {
+                person.name = body.name;
+                person.number = body.number;
+                return person.save()
+            } else {
+                response.status(404).end();
+                returnnull
+            }
+        })
+        .then(updatedPerson => {
+            if (updatedPerson) {
+                response.json(updatedPerson)
+            }      
+        })
+        .catch(error => next(error))        
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {

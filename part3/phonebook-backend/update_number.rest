@@ -1,0 +1,15 @@
+PUT http://localhost:3001/api/persons/699d980a06646d11aa2443e2
+Content-Type: application/json
+
+{
+    "name":"Arto Hellas",
+    "number":"99-00-909090"
+}
+###
+PUT https://fullstackopenphonebook-3fa3.onrender.com/api/persons/699da1bb6727ab2ea1b5c52e
+Content-Type: application/json
+
+{
+    "name" : "Ada Lovelace",
+    "number" :"012-444444"
+}
