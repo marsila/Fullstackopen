@@ -74,11 +74,18 @@ const App = () => {
             setNewNumber("");
           })
           .catch((error) => {
-            setMessage({
-              text: `Information of ${nameExists.name} has already been removed from server`,
-              type: "error",
-            });
-            setPersons(persons.filter((p) => p.id !== nameExists.id));
+            if (error.response && error.response.status === 400) {
+              setMessage({
+                text: error.response.data.error,
+                type: "error",
+              });
+            } else {
+              setMessage({
+                text: `Information of ${nameExists.name} has already been removed from server`,
+                type: "error",
+              });
+              setPersons(persons.filter((p) => p.id !== nameExists.id));
+            }
             setTimeout(() => {
               setMessage(null);
             }, 5000);
