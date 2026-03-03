@@ -82,6 +82,7 @@ const App = () => {
             setTimeout(() => {
               setMessage(null);
             }, 5000);
+            console.log(error.response.data.error);
           });
       }
       return;
@@ -93,15 +94,30 @@ const App = () => {
     }
     //Add new person
     const personObject = { name: newName, number: newNumber };
-    personsService.create(personObject).then((createdPerson) => {
-      setPersons((prev) => [...prev, createdPerson]);
-      setMessage({ text: `${createdPerson.name} was Added`, type: "success" });
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
-      setNewName("");
-      setNewNumber("");
-    });
+    personsService
+      .create(personObject)
+      .then((createdPerson) => {
+        setPersons((prev) => [...prev, createdPerson]);
+        setMessage({
+          text: `${createdPerson.name} was Added`,
+          type: "success",
+        });
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
+        setNewName("");
+        setNewNumber("");
+      })
+      .catch((error) => {
+        setMessage({
+          text: error.response.data.error,
+          type: "error",
+        });
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
+        console.log(error.response.data.error);
+      });
   };
 
   const removePerson = (id) => {
@@ -124,6 +140,7 @@ const App = () => {
           setTimeout(() => {
             setMessage(null);
           }, 5000);
+          console.log(error);
         });
   };
 
