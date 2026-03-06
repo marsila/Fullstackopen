@@ -1,0 +1,19 @@
+{
+  "name": "bloglist-backend",
+  "version": "1.0.0",
+  "description": "blog list backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo\\\"Error: no test specifide\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marsila/Fullstackopen.git"
+  },
+  "author": "Rasha Ali",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marsila/Fullstackopen/issues"
+  },
+  "homepage": "https://github.com/marsila/Fullstackopen#readme"
+}
