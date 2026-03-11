@@ -1,16 +1,4 @@
 const mongoose = require('mongoose')
-const config = require('../utils/config')
-const logger = require('../utils/logger')
-
-
-
-mongoose.connect(config.MONGODB_URI, { family: 4 })
-.then(() => {
-    logger.info('Connected successfully!')
-  })
-  .catch(err => {
-    logger.error('Connection error:', err.message)
-  })
 
 const blogSchema = new mongoose.Schema({
   title: {
