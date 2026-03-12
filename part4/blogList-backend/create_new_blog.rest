@@ -13,7 +13,7 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title" : "this is a new blog",
-    "author" :"Marta Scott",
+    "title" : "this is a second blog",
+    "author" :"Liana Maria",
     "url" : "http://localhost:3003"
 }

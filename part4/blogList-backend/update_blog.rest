@@ -1,0 +1,9 @@
+PuT http://localhost:3003/api/blogs/69b188c83743fdb143b22d1d
+Content-Type: application/json
+
+{
+    "title" : "this is an update for the  blog",
+    "author" :"Marta Scott",
+    "url" : "http://localhost:3003",
+    "likes" : 6
+}
