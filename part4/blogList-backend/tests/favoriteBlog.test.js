@@ -2,7 +2,7 @@ const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
 
-describe('total likes', () => {
+describe('favorite blog', () => {
     const listWithOneBlog = [
         {
             _id: '5a422aa71b54a676234d17f8',
@@ -14,14 +14,19 @@ describe('total likes', () => {
         }
     ]
 
-    test('when list is empty, equals 0', () => {
-        const result = listHelper.totalLikes([])
+    test('when list is empty ,0', () => {
+        const result = listHelper.favoriteBlog([])
         assert.strictEqual(result, 0)
     })
 
     test('when list has only one blog, equals the likes of that', () => {
-        const result = listHelper.totalLikes(listWithOneBlog)
-        assert.strictEqual(result, 5)
+        const result = listHelper.favoriteBlog(listWithOneBlog);
+        console.log("From test: ", result);
+        assert.deepStrictEqual(result, {
+            title: 'Go To Statement Considered Harmful',
+            author: 'Edsger W. Dijkstra',
+            likes: 5
+        })
     })
 
 
@@ -49,8 +54,12 @@ describe('total likes', () => {
         }
     ]
 
-    test('lists with more than one blog', ()=>{
-        const result = listHelper.totalLikes(listWithMoreBlogs)
-        assert.strictEqual(result,9)
+    test('lists with more than one blog', () => {
+        const result = listHelper.favoriteBlog(listWithMoreBlogs)
+        assert.deepStrictEqual(result, {
+            title: "this is a second update for the  blog",
+            author: "Marta Scott",
+            likes: 6
+        })
     })
 })
