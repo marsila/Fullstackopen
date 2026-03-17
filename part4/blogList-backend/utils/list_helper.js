@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 const dummy = (blogs) => {
     return 1;
 }
@@ -20,8 +22,26 @@ const favoriteBlog = (blogs) => {
     }
 }
 
+const mostBlogs = (blogs)=> {
+    if (blogs.length === 0) return 0;
+
+    //using lodash library : countBy, map , maxBy
+    const authorCounts = _.countBy(blogs, 'author')
+    //_.countBy returns an object
+
+    //convert the objsct into array using _.map
+    const authorsArray = _.map(authorCounts,(count, name)=> ({
+        author:name,
+        blogs:count
+    }))
+
+    return _.maxBy(authorsArray,'blogs')
+
+}
+
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs
 }
