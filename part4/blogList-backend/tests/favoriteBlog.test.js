@@ -14,9 +14,9 @@ describe('favorite blog', () => {
         }
     ]
 
-    test('when list is empty ,0', () => {
+    test('when list is empty ,no blogs', () => {
         const result = listHelper.favoriteBlog([])
-        assert.strictEqual(result, 0)
+        assert.strictEqual(result, null)
     })
 
     test('when list has only one blog, equals the likes of that', () => {

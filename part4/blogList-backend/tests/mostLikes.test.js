@@ -1,8 +1,8 @@
-const { test, describe } = require('node:test')
+const {describe,test} = require('node:test')
 const assert = require('node:assert')
-const mostBlogs = require('../utils/list_helper').mostBlogs
+const mostLikes = require('../utils/list_helper').mostLikes
 
-describe('Most blogs', () => {
+describe('Author with most likes',()=>{
     const oneItemList = [
         {
             _id: "5a422a851b54a676234d17f7",
@@ -65,25 +65,25 @@ describe('Most blogs', () => {
         }
     ]
 
-    test('The list is empty, no blogs', () => {
-        const result = mostBlogs([]);
-        assert.strictEqual(result, null)
+
+    test('empty list, null', () =>{
+        const result = mostLikes([]);
+        assert.strictEqual(result,null)
     })
 
-    test('List with only one blog, the blog', () => {
-        const result = mostBlogs(oneItemList);
-        assert.deepStrictEqual(result,{
-            author:'Michael Chan',
-            blogs:1
-        })
-    })
-
-    test('More than one blog list', ()=>{
-        const result = mostBlogs(blogs);
+    test('One blog list, the likes of the blog', () => {
+        const result = mostLikes(oneItemList)
         assert.deepStrictEqual(result, {
-            author:'Robert C. Martin',
-            blogs:3
+            author : "Michael Chan",
+            likes : 7
         })
     })
 
+    test('more than one item list', () => {
+        const result = mostLikes(blogs);
+        assert.deepStrictEqual(result, {
+            author : "Edsger W. Dijkstra",
+            likes : 17
+        })
+    })
 })
