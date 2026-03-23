@@ -45,9 +45,19 @@ test('get all the blogs', async () => {
         .expect(200) 
         .expect('Content-Type', /application\/json/) 
 
+   // console.log('response from get all', response.body);
+   // console.log('the id of first blog',response.body[0].id)
     assert.strictEqual(response.body.length, initialBlogs.length)
 
 })
+
+test('the unique identifier property of the blog posts is named id ', async() => {
+    const response = await api.get('/api/blogs')
+    
+    assert.ok(response.body[0].id)
+    assert.strictEqual(response.body[0]._id,undefined)    
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
