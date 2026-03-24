@@ -69,36 +69,30 @@ test('new blog added to the list', async () => {
         .post('/api/blogs')
         .send(newBlog)
         .expect(201)
-        .expect('Content-Type',/application\/json/)
-    
+        .expect('Content-Type', /application\/json/)
+
     const response = await api.get('/api/blogs')
     //console.log('add new blog res',response.body);
-    
-    assert.strictEqual(response.body.length, initialBlogs.length+1)
 
-    const titles = response.body.map(b=>b.title)
+    assert.strictEqual(response.body.length, initialBlogs.length + 1)
+
+    const titles = response.body.map(b => b.title)
     assert.ok(titles.includes('Type wars'))
 })
 
-test('if likes property is missing, it defaults to 0', async()=>{
+test('if likes property is missing, it defaults to 0', async () => {
     const newBlog = {
         title: "Type wars2",
         author: "Robert C. Martin",
         url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars2.html",
     }
-    await api   
-        .post('/api/blogs')
-        .send(newBlog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
-    const response = await api.get('/api/blogs')
-     
-    const addedBlog = response.body.find(b => b.title === "Type wars2")
-    
-    //console.log('added blog', addedBlog);
-    //console.log('likes',addedBlog.likes);
+    const response = await api
+                        .post('/api/blogs')
+                        .send(newBlog)
+                        .expect(201)
+                        .expect('Content-Type', /application\/json/)
 
-    assert.strictEqual(addedBlog.likes, 0)
+    assert.strictEqual(response.body.likes, 0)
 })
 
 
