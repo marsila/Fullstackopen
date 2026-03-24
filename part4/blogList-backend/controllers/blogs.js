@@ -4,7 +4,7 @@ const Blog = require('../models/blog')
 const logger = require('../utils/logger')
 
 
-blogsRouter.get('/', async(request, response) => {
+blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({})
   response.json(blogs)
 })
@@ -21,7 +21,7 @@ blogsRouter.get('/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-blogsRouter.post('/', (request, response, next) => {
+blogsRouter.post('/', async (request, response) => {
   const body = request.body
   if (!body.title || !body.author || !body.url) {
     return response.status(400).json({
@@ -34,12 +34,11 @@ blogsRouter.post('/', (request, response, next) => {
     url: body.url,
     likes: 0
   })
-  blog.save()
-    .then(savedBlog => {
-      response.json(savedBlog)
-      logger.info('added new blog ', blog)
-    })
-    .catch(error => next(error))
+
+  const savedBlog = await blog.save()
+
+  response.status(201).json(savedBlog)
+  logger.info('added new blog ', blog)
 })
 
 blogsRouter.put('/:id', (request, response, next) => {

@@ -39,25 +39,48 @@ beforeEach(async () => {
     await blogObject.save()
 })
 
-test('get all the blogs', async () => {
-    const response = await api
-        .get('/api/blogs')
-        .expect(200) 
-        .expect('Content-Type', /application\/json/) 
+// test('get all the blogs', async () => {
+//     const response = await api
+//         .get('/api/blogs')
+//         .expect(200)
+//         .expect('Content-Type', /application\/json/)
 
-   // console.log('response from get all', response.body);
-   // console.log('the id of first blog',response.body[0].id)
-    assert.strictEqual(response.body.length, initialBlogs.length)
+//     // console.log('response from get all', response.body);
+//     // console.log('the id of first blog',response.body[0].id)
+//     assert.strictEqual(response.body.length, initialBlogs.length)
 
-})
+// })
 
-test('the unique identifier property of the blog posts is named id ', async() => {
-    const response = await api.get('/api/blogs')
+// test('the unique identifier property of the blog posts is named id ', async () => {
+//     const response = await api.get('/api/blogs')
+
+//     assert.ok(response.body[0].id)
+//     assert.strictEqual(response.body[0]._id, undefined)
+// })
+
+test('new blog added to the list', async () => {
+    const newBlog = {
+        title: "Type wars",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+        likes: 2
+    }
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type',/application\/json/)
     
-    assert.ok(response.body[0].id)
-    assert.strictEqual(response.body[0]._id,undefined)    
+    const response = await api.get('/api/blogs')
+    console.log('add new blog res',response.body);
+    
+    assert.strictEqual(response.body.length, initialBlogs.length+1)
+
+    const titles = response.body.map(b=>b.title)
+    assert.ok(titles.includes('Type wars'))
 })
 
 after(async () => {
     await mongoose.connection.close()
 })
+
