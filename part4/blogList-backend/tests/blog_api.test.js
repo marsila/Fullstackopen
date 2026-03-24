@@ -5,6 +5,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const { initial } = require('lodash')
+const { title } = require('node:process')
 
 const api = supertest(app)
 
@@ -87,15 +88,44 @@ test('if likes property is missing, it defaults to 0', async () => {
         url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars2.html",
     }
     const response = await api
-                        .post('/api/blogs')
-                        .send(newBlog)
-                        .expect(201)
-                        .expect('Content-Type', /application\/json/)
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
 
     assert.strictEqual(response.body.likes, 0)
 })
 
+test('if the title is missing from the request data', async () => {
+    const newBlog = {
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars2.html",
+    }
+    
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
 
+    const response = await api.get('/api/blogs')
+    assert.strictEqual(response.body.length,initialBlogs.length)
+})
+
+test('if the url is missing from the request data', async () => {
+    
+    const newBlog = {
+        title : "Type Wars",
+        author: "Robert C. Martin"       
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const response = await api.get('/api/blogs')
+    assert.strictEqual(response.body.length,initialBlogs.length)
+})
 
 after(async () => {
     await mongoose.connection.close()
