@@ -6,44 +6,21 @@ const app = require('../app')
 const Blog = require('../models/blog')
 const { initial } = require('lodash')
 const { title } = require('node:process')
-
+const helper = require('./test_helper')
 const api = supertest(app)
 
-const initialBlogs = [
-    {
-        title: "React patterns",
-        author: "Michael Chan",
-        url: "https://reactpatterns.com/",
-        likes: 7
-    },
-    {
-        title: "Go To Statement Considered Harmful",
-        author: "Edsger W. Dijkstra",
-        url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-        likes: 5
-    },
-    {
-        title: "Canonical string reduction",
-        author: "Edsger W. Dijkstra",
-        url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-        likes: 12
-    }
-]
+
 
 beforeEach(async () => {
     await Blog.deleteMany({})
-    let blogObject = new Blog(initialBlogs[0])
+    let blogObject = new Blog(helper.initialBlogs[0])
     await blogObject.save()
-    blogObject = new Blog(initialBlogs[1])
+    blogObject = new Blog(helper.initialBlogs[1])
     await blogObject.save()
-    blogObject = new Blog(initialBlogs[2])
+    blogObject = new Blog(helper.initialBlogs[2])
     await blogObject.save()
 })
 
-const blogsInDb = async () => {
-  const blogs = await Blog.find({})
-  return blogs.map(blog => blog.toJSON())
-}
 
 test('get all the blogs', async () => {
     const response = await api
@@ -53,7 +30,7 @@ test('get all the blogs', async () => {
 
     // console.log('response from get all', response.body);
     // console.log('the id of first blog',response.body[0].id)
-    assert.strictEqual(response.body.length, initialBlogs.length)
+    assert.strictEqual(response.body.length, helper.initialBlogs.length)
 
 })
 
@@ -77,12 +54,11 @@ test('new blog added to the list', async () => {
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/api/blogs')
-    //console.log('add new blog res',response.body);
+    const blogsAtEnd = await helper.blogsInDb()
 
-    assert.strictEqual(response.body.length, initialBlogs.length + 1)
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
 
-    const titles = response.body.map(b => b.title)
+    const titles = blogsAtEnd.map(b => b.title)
     assert.ok(titles.includes('Type wars'))
 })
 
@@ -112,8 +88,8 @@ test('if the title is missing from the request data', async () => {
         .send(newBlog)
         .expect(400)
 
-    const response = await api.get('/api/blogs')
-    assert.strictEqual(response.body.length,initialBlogs.length)
+    const blogAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogAtEnd.length, helper.initialBlogs.length)
     
 })
 
@@ -129,19 +105,19 @@ test('if the url is missing from the request data', async () => {
         .send(newBlog)
         .expect(400)
 
-    const response = await api.get('/api/blogs')
-    assert.strictEqual(response.body.length,initialBlogs.length)
+    const blogAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogAtEnd.length,helper.initialBlogs.length)
 })
 
 test('deleting a blog from blogs list', async () => {
-    const blogAtStart = await blogsInDb()
+    const blogAtStart = await helper.blogsInDb()
     const blogToDelete = blogAtStart[0]
 
     await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
 
-    const blogAtEnd = await blogsInDb()
+    const blogAtEnd = await helper.blogsInDb()
     
-    assert.strictEqual(blogAtEnd.length, initialBlogs.length -1)
+    assert.strictEqual(blogAtEnd.length, helper.initialBlogs.length -1)
 
     const ids = blogAtEnd.map(b => b.id)
     assert.ok(!ids.includes(blogToDelete.id))
