@@ -40,6 +40,11 @@ beforeEach(async () => {
     await blogObject.save()
 })
 
+const blogsInDb = async () => {
+  const blogs = await Blog.find({})
+  return blogs.map(blog => blog.toJSON())
+}
+
 test('get all the blogs', async () => {
     const response = await api
         .get('/api/blogs')
@@ -101,7 +106,7 @@ test('if the title is missing from the request data', async () => {
         author: "Robert C. Martin",
         url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars2.html",
     }
-    
+
     await api
         .post('/api/blogs')
         .send(newBlog)
@@ -109,6 +114,7 @@ test('if the title is missing from the request data', async () => {
 
     const response = await api.get('/api/blogs')
     assert.strictEqual(response.body.length,initialBlogs.length)
+    
 })
 
 test('if the url is missing from the request data', async () => {
@@ -125,6 +131,20 @@ test('if the url is missing from the request data', async () => {
 
     const response = await api.get('/api/blogs')
     assert.strictEqual(response.body.length,initialBlogs.length)
+})
+
+test('deleting a blog from blogs list', async () => {
+    const blogAtStart = await blogsInDb()
+    const blogToDelete = blogAtStart[0]
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+    const blogAtEnd = await blogsInDb()
+    
+    assert.strictEqual(blogAtEnd.length, initialBlogs.length -1)
+
+    const ids = blogAtEnd.map(b => b.id)
+    assert.ok(!ids.includes(blogToDelete.id))
 })
 
 after(async () => {
