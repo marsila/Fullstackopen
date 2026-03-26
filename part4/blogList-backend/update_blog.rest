@@ -7,3 +7,10 @@ Content-Type: application/json
     "url" : "http://localhost:3003",
     "likes" : 6
 }
+###
+PuT http://localhost:3003/api/blogs/69c501953028f145fe9bc7d7
+Content-Type: application/json
+
+{
+    "likes" : 17
+}
