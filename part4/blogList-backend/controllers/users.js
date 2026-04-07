@@ -1,9 +1,14 @@
 const bcrypt = require('bcrypt')
 const usersRouter =require('express').Router()
 const User = require('../models/user')
+const { error } = require('../utils/logger')
 
 usersRouter.post('/',async(request,response)=> {
     const {username,name,password}=request.body
+    console.log(`password length: ${password.length}`);
+    if(password.length < 3){
+        return response.status(400).json({error:`pasword should be more than 4 characters`})
+    }
     const passwordHash = await bcrypt.hash(password,10)
 
     const user = new User({username,name,passwordHash})
