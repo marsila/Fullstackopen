@@ -56,6 +56,42 @@ describe('New user', () => {
         assert.strictEqual(usersAtEnd.length,usersAtStart.length)
 
     })
+    test('fails when the username is too short', async() => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = {
+            username : "ab",
+            name : "ab",
+            password : "1234" 
+        }
+
+        const result = await api
+                                .post('/api/users')
+                                .send(newUser)
+                                .expect(400)
+                                .expect('Content-Type',/application\/json/)
+
+        assert(result.body.error.includes('is shorter than the minimum allowed length'))
+        const usersAtEnd = await helper.usersInDb()
+        assert.strictEqual(usersAtEnd.length,usersAtStart.length)
+    })
+
+    test('the hashed password is not visible in the response', async () => {
+        const newUser ={
+            username:"passwordCheck",
+            name : "password check",
+            password : "validPass"
+        }
+
+        const result = await api
+                                .post('/api/users')
+                                .send(newUser)
+                                .expect(201)
+                                .expect('Content-Type',/application\/json/)
+        
+        assert.strictEqual(result.body.hasOwnProperty('passwordHash'),false)
+        assert.ok(result.body.id)
+    })
 })
 
 after(async () => {
