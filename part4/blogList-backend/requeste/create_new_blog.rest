@@ -1,0 +1,30 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title" : "My first blog",
+    "author" :"Anna Morch",
+    "url" : "http://localhost:3003",
+    "likes":3
+}
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title" : "this is a test user blog",
+    "author" :"Liana Maria",
+    "url" : "http://localhost:3003",
+    "userId" : "69d66724a135a663711d8baf"
+}
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title" : "this is another blog for the user 'admin'",
+    "author" :"admin",
+    "url" : "http://localhost:3003",
+    "userId" : "69d66724a135a663711d8baf"
+}
