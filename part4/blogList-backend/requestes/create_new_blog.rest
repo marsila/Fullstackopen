@@ -28,3 +28,24 @@ Content-Type: application/json
     "url" : "http://localhost:3003",
     "userId" : "69d66724a135a663711d8baf"
 }
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title" : "new blog with authentication for the user 'admin'",
+    "author" :"admin",
+    "url" : "http://localhost:3003",
+    "userId" : "69d66724a135a663711d8baf"
+}
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2OWQ4YjIzNGFhNWY2Mjk0MjYyNDI4ZDAiLCJpYXQiOjE3NzU4MTkyMDF9.x-vvCjhXB7yikdJTipfZkPZjPkioibiCwiUnqm4OMr0
+
+{
+    "title": "Token Verified Blog",
+    "author": "The Admin",
+    "url": "http://admin-site.com",
+    "likes": 5
+}
