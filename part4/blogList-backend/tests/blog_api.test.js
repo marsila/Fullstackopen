@@ -41,6 +41,26 @@ test('the unique identifier property of the blog posts is named id ', async () =
     assert.strictEqual(response.body[0]._id, undefined)
 })
 
+test('add new blog fails with 401 Unauthorized if token is missing', async () => {
+    const newBlog = {
+        title: "Type wars",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+        likes: 2
+    }
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
+/* next tests will fail // I have to change the logic and include the authentication token */
+
 test('new blog added to the list', async () => {
     const newBlog = {
         title: "Type wars",
