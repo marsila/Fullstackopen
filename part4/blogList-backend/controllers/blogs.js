@@ -20,18 +20,10 @@ blogsRouter.get('/:id', async (request, response) => {
   }
 })
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
-
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
 
-  const decodedToken = jwt.verify(getTokenFrom(request),config.SECRET_TOKEN)
+  const decodedToken = jwt.verify(request.token,config.SECRET_TOKEN)
 
   if(!decodedToken){
     return response.status(401).json({error:'invalid token'})
