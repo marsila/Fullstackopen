@@ -60,3 +60,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkb
     "url": "http://admin-site.com",
     "likes": 5
 }
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2OWQ4YjIzNGFhNWY2Mjk0MjYyNDI4ZDAiLCJpYXQiOjE3NzU5MTAwMzB9.eeUbPAHj35w8k7eMaRMdY4mNlhzsnCXw46lkUQ7Qb6M
+
+{
+    "title": "Blog To Delete",
+    "author": "The Admin",
+    "url": "http://admin-site.com",
+    "likes": 5
+}
