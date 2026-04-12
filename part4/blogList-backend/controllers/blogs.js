@@ -1,10 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const logger = require('../utils/logger')
-const User = require('../models/user')
-const jwt = require('jsonwebtoken')
-const config  = require('../utils/config')
-
+const userExtractor = require('../utils/middleware').userExtractor
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user')
@@ -20,16 +17,15 @@ blogsRouter.get('/:id', async (request, response) => {
   }
 })
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
 
-  const decodedToken = jwt.verify(request.token,config.SECRET_TOKEN)
+  const user = request.user
 
-  if(!decodedToken){
-    return response.status(401).json({error:'invalid token'})
+  if(!user){
+    return response.status(401).json({error:'invalid user or token'})
   }
 
-  const user = await User.findById(decodedToken.id)
 
   if (!body.title || !body.url) {
     return response.status(400).json({
@@ -37,11 +33,7 @@ blogsRouter.post('/', async (request, response) => {
     })
   }
 
-  if (!user) {
-    return response.status(400).json({
-      error: 'UserId missing or not valid'
-    })
-  }
+  
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -78,13 +70,12 @@ blogsRouter.put('/:id', async (request, response) => {
   }
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', userExtractor, async (request, response) => {
     
-  const decodedToken = jwt.verify(request.token, config.SECRET_TOKEN)
-  console.log('decodedToken',decodedToken);
+  const user = request.user
 
-  if(!decodedToken.id){
-    return response.status(401).json({error:'invalid token'})
+  if(!user){
+    return response.status(401).json({error:'invalid user or token'})
   }
 
   const blog = await Blog.findById(request.params.id)
@@ -93,7 +84,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     return response.status(404).json({error:'blog not found!'})
   }
 
-  if(blog.user.toString() !== decodedToken.id.toString()){
+  if(blog.user.toString() !== user.id.toString()){
     return response.status(401).json({error: 'only the creator can delete this blog'})
   }
 
