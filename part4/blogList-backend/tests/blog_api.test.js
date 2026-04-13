@@ -1,24 +1,36 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
-const { initial } = require('lodash')
-const { title } = require('node:process')
+const User=require('../models/user')
 const helper = require('./test_helper')
 const api = supertest(app)
+const bcrypt = require('bcrypt')
+const jwt= require('jsonwebtoken')
 
-
+let token = null
 
 beforeEach(async () => {
     await Blog.deleteMany({})
-    let blogObject = new Blog(helper.initialBlogs[0])
-    await blogObject.save()
-    blogObject = new Blog(helper.initialBlogs[1])
-    await blogObject.save()
-    blogObject = new Blog(helper.initialBlogs[2])
-    await blogObject.save()
+    await User.deleteMany({})
+
+    passwordHash = await bcrypt.hash('password12', 10)
+    const user = new User({ username: "testuser", name: "test user", passwordHash })
+    const savedUser = await user.save()
+
+    const userForToken = {
+        username: user.username,
+        id: user._id,
+    }
+    token = jwt.sign(userForToken, process.env.SECRET_TOKEN)
+
+    const blogObjects = helper.initialBlogs.map(blog => ({
+        ...blog,
+        user:savedUser._id
+    }))
+    await Blog.insertMany(blogObjects)
 })
 
 
@@ -59,9 +71,9 @@ test('add new blog fails with 401 Unauthorized if token is missing', async () =>
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 })
 
-/* next tests will fail // I have to change the logic and include the authentication token */
 
 test('new blog added to the list', async () => {
+
     const newBlog = {
         title: "Type wars",
         author: "Robert C. Martin",
@@ -70,6 +82,7 @@ test('new blog added to the list', async () => {
     }
     await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -82,6 +95,7 @@ test('new blog added to the list', async () => {
     assert.ok(titles.includes('Type wars'))
 })
 
+
 test('if likes property is missing, it defaults to 0', async () => {
     const newBlog = {
         title: "Type wars2",
@@ -90,6 +104,7 @@ test('if likes property is missing, it defaults to 0', async () => {
     }
     const response = await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -105,58 +120,63 @@ test('if the title is missing from the request data', async () => {
 
     await api
         .post('/api/blogs')
+        .set('Authorization',`Bearer ${token}`)
         .send(newBlog)
         .expect(400)
 
     const blogAtEnd = await helper.blogsInDb()
     assert.strictEqual(blogAtEnd.length, helper.initialBlogs.length)
-    
+
 })
 
 test('if the url is missing from the request data', async () => {
-    
+
     const newBlog = {
-        title : "Type Wars",
-        author: "Robert C. Martin"       
+        title: "Type Wars",
+        author: "Robert C. Martin"
     }
 
     await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(400)
 
     const blogAtEnd = await helper.blogsInDb()
-    assert.strictEqual(blogAtEnd.length,helper.initialBlogs.length)
+    assert.strictEqual(blogAtEnd.length, helper.initialBlogs.length)
 })
 
 test('deleting a blog from blogs list', async () => {
     const blogAtStart = await helper.blogsInDb()
     const blogToDelete = blogAtStart[0]
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+    await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204)
 
     const blogAtEnd = await helper.blogsInDb()
-    
-    assert.strictEqual(blogAtEnd.length, helper.initialBlogs.length -1)
+
+    assert.strictEqual(blogAtEnd.length, helper.initialBlogs.length - 1)
 
     const ids = blogAtEnd.map(b => b.id)
     assert.ok(!ids.includes(blogToDelete.id))
 })
 
-test('updates the likes of a blog',async() => {
+test('updates the likes of a blog', async () => {
     const blogAtStart = await helper.blogsInDb()
     const blogToUpdate = blogAtStart[0]
-    const updatedLikes = {...blogToUpdate,likes: blogToUpdate.likes +1}
+    const updatedLikes = { ...blogToUpdate, likes: blogToUpdate.likes + 1 }
 
     await api
         .put(`/api/blogs/${blogToUpdate.id}`)
         .send(updatedLikes)
         .expect(200)
         .expect('Content-Type', /application\/json/)
-    
+
     const blogAtEnd = await helper.blogsInDb()
     const updatedBlog = blogAtEnd.find(b => b.id === blogToUpdate.id)
-    assert.strictEqual(updatedBlog.likes, blogToUpdate.likes +1)
+    assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 1)
 })
 
 after(async () => {
