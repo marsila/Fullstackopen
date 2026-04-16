@@ -1,32 +1,54 @@
-import { useEffect, useState } from "react"
-import Blog from "./components/Blog"
-import blogService from "./services/blogs"
+import { useEffect, useState } from "react";
+import Blog from "./components/Blog";
+import blogService from "./services/blogs";
+import LoginForm from "./components/loginForm";
 
 function App() {
+  const [blogs, setBlogs] = useState([]);
+  const [loginForm, setloginForm] = useState({});
 
-  const [blogs, setBlogs] = useState([])
-
-  useEffect(()=>{
+  useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await blogService.getAll()
-        console.log('the response from server', response);        
-        setBlogs(response)
+        const response = await blogService.getAll();
+        setBlogs(response);
       } catch (error) {
-        console.error('Somthing went wrong', error)
+        console.error("Somthing went wrong", error);
       }
-    }
-    fetchBlogs()
-  },[])
+    };
+    fetchBlogs();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setloginForm((prevLoginForm) => ({
+      ...prevLoginForm,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(
+      `Submited, username = ${loginForm.username} and pass = ${loginForm.password}`,
+    );
+  };
 
   return (
     <>
-      <h1>Blogs</h1>
-      {blogs.map(blog => 
-        <Blog key ={blog.id} blog= {blog}/>
-      )}
+      <LoginForm
+        loginForm={loginForm}
+        handleInputChange={handleInputChange}
+        handleSubmit={handleSubmit}
+      />
+      <div>
+        <h1>Blogs</h1>
+        {blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} />
+        ))}
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
