@@ -1,5 +1,5 @@
 const LoginForm = (props) => {
-  const  {LoginForm, handleInputChange, handleSubmit} = props
+  const  {loginFormData, handleInputChange, handleSubmit} = props
   return (
     <>
       <h1>Log in to application</h1>
@@ -8,16 +8,16 @@ const LoginForm = (props) => {
           username: <input 
                         type="text"
                         name="username"
-                        value={LoginForm.username}
+                        value={loginFormData.username}
                         onChange={handleInputChange} 
                     />
         </label>
         <br />
         <label htmlFor="password">
           password: <input 
-                        type="text"
+                        type="password"
                         name="password"
-                        value={LoginForm.password}
+                        value={loginFormData.password}
                         onChange={handleInputChange} 
                     />
         </label>

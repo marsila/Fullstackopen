@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
+import loginService from "./services/login";
 import LoginForm from "./components/loginForm";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-  const [loginForm, setloginForm] = useState({});
+  const [loginFormData, setloginFormData] = useState({
+    username: "",
+    password: "",
+  });
+  const [user, setUser] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -21,28 +27,42 @@ function App() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setloginForm((prevLoginForm) => ({
+    setloginFormData((prevLoginForm) => ({
       ...prevLoginForm,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(
-      `Submited, username = ${loginForm.username} and pass = ${loginForm.password}`,
-    );
-  };
+    const username = loginFormData.username;
+    const password = loginFormData.password;
+    console.log(username, password);
 
-  return (
-    <>
+    try {
+      const newUser = await loginService.login({ username, password });
+      setUser(newUser);
+      setloginFormData({ username: "", password: "" });
+    } catch (error) {
+      setErrorMessage("wrong credentials", error);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+  if (user === null)
+    return (
       <LoginForm
-        loginForm={loginForm}
+        loginFormData={loginFormData}
         handleInputChange={handleInputChange}
         handleSubmit={handleSubmit}
       />
+    );
+  return (
+    <>
+      <h1>Blogs</h1>
       <div>
-        <h1>Blogs</h1>
+        <h3>{user.name} logged in</h3>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
