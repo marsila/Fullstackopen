@@ -6,7 +6,7 @@ import LoginForm from "./components/loginForm";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-  const [loginFormData, setloginFormData] = useState({
+  const [loginFormData, setLoginFormData] = useState({
     username: "",
     password: "",
   });
@@ -27,7 +27,7 @@ function App() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setloginFormData((prevLoginForm) => ({
+    setLoginFormData((prevLoginForm) => ({
       ...prevLoginForm,
       [name]: value,
     }));
@@ -41,15 +41,24 @@ function App() {
 
     try {
       const newUser = await loginService.login({ username, password });
+      
+      window.localStorage.setItem('loggedUser',JSON.stringify(newUser))
       setUser(newUser);
-      setloginFormData({ username: "", password: "" });
+
+      setLoginFormData({ username: "", password: "" });
     } catch (error) {
       setErrorMessage("wrong credentials", error);
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
     }
-  };
+  }
+
+  const handleUserLogout = () => {
+    window.localStorage.removeItem('loggedUser')
+    setUser(null)
+  }
+
   if (user === null)
     return (
       <LoginForm
@@ -62,7 +71,8 @@ function App() {
     <>
       <h1>Blogs</h1>
       <div>
-        <h3>{user.name} logged in</h3>
+        <h3>{user.name} logged in <button onClick={handleUserLogout}>logout</button></h3>
+        
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
