@@ -23,6 +23,11 @@ function App() {
   });
 
   const [messageForUser, setMessageForUser] = useState(null);
+  //Helper function to extract error messages and Notifications
+  const notify = (text, type) => {
+    setMessageForUser({text,type})
+    setTimeout(()=> setMessageForUser(null),5000)
+  }
 
   const [blog, setBlog] = useState({
     title: "",
@@ -36,13 +41,7 @@ function App() {
         const response = await blogService.getAll();
         setBlogs(response);
       } catch {
-        setMessageForUser({
-          text: `Somthing went wrong! Can't show the blogs`,
-          type: "error",
-        });
-        setTimeout(() => {
-          setMessageForUser(null);
-        }, 5000);
+        notify( `Somthing went wrong! Can't show the blogs`,"error")
       }
     };
     fetchBlogs();
@@ -67,13 +66,7 @@ function App() {
       setUser(newUser);
       setLoginFormData({ username: "", password: "" });
     } catch{
-      setMessageForUser({
-        text: ` wrong credentials! please check the user name and password and try again`,
-        type: "error",
-      });
-      setTimeout(() => {
-        setMessageForUser(null);
-      }, 5000);
+      notify(` wrong credentials! please check the user name and password and try again`,"error")
     }
   };
 
@@ -96,21 +89,9 @@ function App() {
       const newBlog = await blogService.creatBlog(blog);
       setBlogs(blogs.concat(newBlog));
       setBlog({ title: "", author: "", url: "" });
-      setMessageForUser({
-        text: `a new blog was created: ${newBlog.title}, by ${newBlog.author}`,
-        type: "success",
-      });
-      setTimeout(() => {
-        setMessageForUser(null);
-      }, 5000);
-    } catch (error) {
-      setMessageForUser({
-        text: `new blog wasn't created, some fields are missing!`,
-        type: "error",
-      });
-      setTimeout(() => {
-        setMessageForUser(null);
-      }, 5000);
+      notify(`a new blog was created: ${newBlog.title}, by ${newBlog.author}`,"success")
+    } catch {
+      notify(`new blog wasn't created, some fields are missing!`,"error")
     }
   };
   return (
