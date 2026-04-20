@@ -31,6 +31,7 @@ Content-Type: application/json
 ###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2OWUwYjYxOGI0ZmM2NmE2YTZkNDQzZDQiLCJpYXQiOjE3NzYzMzQzODV9.tABfHZ6X00cZhUWgrdBAc98_h3Be2kiuWon-DDleChk
 
 {
     "title" : "new blog with authentication for the user 'admin'",
@@ -41,7 +42,7 @@ Content-Type: application/json
 ###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2OWQ4YjIzNGFhNWY2Mjk0MjYyNDI4ZDAiLCJpYXQiOjE3NzU5MTAwMzB9.eeUbPAHj35w8k7eMaRMdY4mNlhzsnCXw46lkUQ7Qb6M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2OWUwYjYxOGI0ZmM2NmE2YTZkNDQzZDQiLCJpYXQiOjE3NzYzMzQzODV9.tABfHZ6X00cZhUWgrdBAc98_h3Be2kiuWon-DDleChk
 
 {
     "title": "Token Verified Blog",
@@ -74,7 +75,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkb
 ###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lbWJlcjMiLCJpZCI6IjY5ZGI2YWM1NzQwN2NlMjRkZTgyNTk0MiIsImlhdCI6MTc3NTk4NzQyNH0.bimLJJhIubtsphN_Y_38-hA2bolzjv7laetTTJvc7LM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lbWJlcjMiLCJpZCI6IjY5ZTI1YjBhYTAyNDFhMDc5MjcwYmMyNCIsImlhdCI6MTc3NjQ0MjE1MX0.TcHKp24RYfMyN2Uw-Nq_7fW2sUduu5sYZTDDiOINXbc
 
 {
     "title": "Blog To Delete",
