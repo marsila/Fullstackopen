@@ -4,6 +4,7 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import LoginForm from "./components/loginForm";
 import CreateBlog from "./components/CreatBlog";
+import Notifications from "./components/Notifications";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -21,7 +22,7 @@ function App() {
     return null;
   });
 
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [messageForUser, setMessageForUser] = useState(null);
 
   const [blog, setBlog] = useState({
     title: "",
@@ -34,8 +35,14 @@ function App() {
       try {
         const response = await blogService.getAll();
         setBlogs(response);
-      } catch (error) {
-        console.error("Somthing went wrong", error);
+      } catch {
+        setMessageForUser({
+          text: `Somthing went wrong! Can't show the blogs`,
+          type: "error",
+        });
+        setTimeout(() => {
+          setMessageForUser(null);
+        }, 5000);
       }
     };
     fetchBlogs();
@@ -59,10 +66,13 @@ function App() {
       blogService.setToken(newUser.token);
       setUser(newUser);
       setLoginFormData({ username: "", password: "" });
-    } catch (error) {
-      setErrorMessage("wrong credentials", error);
+    } catch{
+      setMessageForUser({
+        text: ` wrong credentials! please check the user name and password and try again`,
+        type: "error",
+      });
       setTimeout(() => {
-        setErrorMessage(null);
+        setMessageForUser(null);
       }, 5000);
     }
   };
@@ -73,8 +83,6 @@ function App() {
   };
 
   const handleNewBlogInput = (e) => {
-    //console.log('user here', user);
-
     const { name, value } = e.target;
     setBlog((prevBlog) => ({
       ...prevBlog,
@@ -88,39 +96,51 @@ function App() {
       const newBlog = await blogService.creatBlog(blog);
       setBlogs(blogs.concat(newBlog));
       setBlog({ title: "", author: "", url: "" });
-    } catch (error) {
-      setErrorMessage("Somthing went wrong!", error);
+      setMessageForUser({
+        text: `a new blog was created: ${newBlog.title}, by ${newBlog.author}`,
+        type: "success",
+      });
       setTimeout(() => {
-        setErrorMessage(null);
+        setMessageForUser(null);
+      }, 5000);
+    } catch (error) {
+      setMessageForUser({
+        text: `new blog wasn't created, some fields are missing!`,
+        type: "error",
+      });
+      setTimeout(() => {
+        setMessageForUser(null);
       }, 5000);
     }
   };
-
-  if (user === null)
-    return (
-      <LoginForm
-        loginFormData={loginFormData}
-        handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
-      />
-    );
   return (
     <>
-      <h1>Blogs</h1>
-      <div>
-        <h3>
-          {user.name} logged in{" "}
-          <button onClick={handleUserLogout}>logout</button>
-        </h3>
-        <CreateBlog
-          blog={blog}
-          handleNewBlogInput={handleNewBlogInput}
-          createNewBlog={createNewBlog}
+      <Notifications message={messageForUser} />
+      {user === null ? (
+        <LoginForm
+          loginFormData={loginFormData}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
         />
-        {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
-        ))}
-      </div>
+      ) : (
+        <>
+          <h1>Blogs</h1>
+          <div>
+            <h3>
+              {user.name} logged in{" "}
+              <button onClick={handleUserLogout}>logout</button>
+            </h3>
+            <CreateBlog
+              blog={blog}
+              handleNewBlogInput={handleNewBlogInput}
+              createNewBlog={createNewBlog}
+            />
+            {blogs.map((blog) => (
+              <Blog key={blog.id} blog={blog} />
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
 }
