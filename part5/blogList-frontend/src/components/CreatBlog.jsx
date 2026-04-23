@@ -57,8 +57,6 @@ const CreateBlog = ({ createNewBlog }) => {
         <br />
         <button>submit</button>
       </form>
-      <br />
-      <br />
     </div>
   );
 };

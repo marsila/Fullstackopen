@@ -5,10 +5,11 @@ import loginService from "./services/login";
 import LoginForm from "./components/loginForm";
 import CreateBlog from "./components/CreatBlog";
 import Notifications from "./components/Notifications";
+import Togglable from "./components/Togglable";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-  
+
   const [user, setUser] = useState(() => {
     const loggeduUserJSON = window.localStorage.getItem("loggedUser");
     if (loggeduUserJSON) {
@@ -22,9 +23,9 @@ function App() {
   const [messageForUser, setMessageForUser] = useState(null);
   //Helper function to extract error messages and notifications
   const notify = (text, type) => {
-    setMessageForUser({text,type})
-    setTimeout(()=> setMessageForUser(null),5000)
-  }
+    setMessageForUser({ text, type });
+    setTimeout(() => setMessageForUser(null), 5000);
+  };
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -32,13 +33,11 @@ function App() {
         const response = await blogService.getAll();
         setBlogs(response);
       } catch {
-        notify( `Somthing went wrong! Can't show the blogs`,"error")
+        notify(`Somthing went wrong! Can't show the blogs`, "error");
       }
     };
     fetchBlogs();
   }, []);
-
-  
 
   const handleSubmit = async (loginObject) => {
     try {
@@ -48,9 +47,11 @@ function App() {
 
       blogService.setToken(newUser.token);
       setUser(newUser);
-      
-    } catch{
-      notify(` wrong credentials! please check the user name and password and try again`,"error")
+    } catch {
+      notify(
+        ` wrong credentials! please check the user name and password and try again`,
+        "error",
+      );
     }
   };
 
@@ -59,24 +60,24 @@ function App() {
     setUser(null);
   };
 
-
   const createNewBlog = async (blogObject) => {
     try {
       const newBlog = await blogService.creatBlog(blogObject);
       setBlogs(blogs.concat(newBlog));
-      
-      notify(`a new blog was created: ${newBlog.title}, by ${newBlog.author}`,"success")
+
+      notify(
+        `a new blog was created: ${newBlog.title}, by ${newBlog.author}`,
+        "success",
+      );
     } catch {
-      notify(`new blog wasn't created, some fields are missing!`,"error")
+      notify(`new blog wasn't created, some fields are missing!`, "error");
     }
   };
   return (
     <>
       <Notifications message={messageForUser} />
       {user === null ? (
-        <LoginForm
-          loginSubmit={handleSubmit}
-        />
+        <LoginForm loginSubmit={handleSubmit} />
       ) : (
         <>
           <h1>Blogs</h1>
@@ -85,9 +86,9 @@ function App() {
               {user.name} logged in{" "}
               <button onClick={handleUserLogout}>logout</button>
             </h3>
-            <CreateBlog
-              createNewBlog={createNewBlog}
-            />
+            <Togglable buttonLabel="create new blog">
+              <CreateBlog createNewBlog={createNewBlog} />
+            </Togglable>
             {blogs.map((blog) => (
               <Blog key={blog.id} blog={blog} />
             ))}
