@@ -8,10 +8,7 @@ import Notifications from "./components/Notifications";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-  const [loginFormData, setLoginFormData] = useState({
-    username: "",
-    password: "",
-  });
+  
   const [user, setUser] = useState(() => {
     const loggeduUserJSON = window.localStorage.getItem("loggedUser");
     if (loggeduUserJSON) {
@@ -23,17 +20,11 @@ function App() {
   });
 
   const [messageForUser, setMessageForUser] = useState(null);
-  //Helper function to extract error messages and Notifications
+  //Helper function to extract error messages and notifications
   const notify = (text, type) => {
     setMessageForUser({text,type})
     setTimeout(()=> setMessageForUser(null),5000)
   }
-
-  const [blog, setBlog] = useState({
-    title: "",
-    author: "",
-    url: "",
-  });
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -47,24 +38,17 @@ function App() {
     fetchBlogs();
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setLoginFormData((prevLoginForm) => ({
-      ...prevLoginForm,
-      [name]: value,
-    }));
-  };
+  
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (loginObject) => {
     try {
-      const newUser = await loginService.login(loginFormData);
+      const newUser = await loginService.login(loginObject);
 
       window.localStorage.setItem("loggedUser", JSON.stringify(newUser));
 
       blogService.setToken(newUser.token);
       setUser(newUser);
-      setLoginFormData({ username: "", password: "" });
+      
     } catch{
       notify(` wrong credentials! please check the user name and password and try again`,"error")
     }
@@ -75,20 +59,12 @@ function App() {
     setUser(null);
   };
 
-  const handleNewBlogInput = (e) => {
-    const { name, value } = e.target;
-    setBlog((prevBlog) => ({
-      ...prevBlog,
-      [name]: value,
-    }));
-  };
 
-  const createNewBlog = async (e) => {
-    e.preventDefault();
+  const createNewBlog = async (blogObject) => {
     try {
-      const newBlog = await blogService.creatBlog(blog);
+      const newBlog = await blogService.creatBlog(blogObject);
       setBlogs(blogs.concat(newBlog));
-      setBlog({ title: "", author: "", url: "" });
+      
       notify(`a new blog was created: ${newBlog.title}, by ${newBlog.author}`,"success")
     } catch {
       notify(`new blog wasn't created, some fields are missing!`,"error")
@@ -99,9 +75,7 @@ function App() {
       <Notifications message={messageForUser} />
       {user === null ? (
         <LoginForm
-          loginFormData={loginFormData}
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
+          loginSubmit={handleSubmit}
         />
       ) : (
         <>
@@ -112,8 +86,6 @@ function App() {
               <button onClick={handleUserLogout}>logout</button>
             </h3>
             <CreateBlog
-              blog={blog}
-              handleNewBlogInput={handleNewBlogInput}
               createNewBlog={createNewBlog}
             />
             {blogs.map((blog) => (

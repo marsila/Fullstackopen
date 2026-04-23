@@ -1,5 +1,22 @@
-const LoginForm = (props) => {
-  const  {loginFormData, handleInputChange, handleSubmit} = props
+import { useState } from "react";
+const LoginForm = ({loginSubmit}) => {
+  const [loginFormData, setLoginFormData] = useState({
+      username: "",
+      password: "",
+    });
+  const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setLoginFormData((prevLoginForm) => ({
+        ...prevLoginForm,
+        [name]: value,
+      }));
+    };
+
+  const handleSubmit = (e) => {
+      e.preventDefault();
+      loginSubmit(loginFormData)
+      setLoginFormData({ username: "", password: "" });
+    };
   return (
     <>
       <h1>Log in to application</h1>
