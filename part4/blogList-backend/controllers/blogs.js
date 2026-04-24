@@ -22,8 +22,8 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
   const user = request.user
 
-  if(!user){
-    return response.status(401).json({error:'invalid user or token'})
+  if (!user) {
+    return response.status(401).json({ error: 'invalid user or token' })
   }
 
 
@@ -33,7 +33,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
     })
   }
 
-  
+
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -51,41 +51,53 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   logger.info('added new blog ', blog)
 })
 
-blogsRouter.put('/:id', async (request, response) => {
-  const { title, author, url, likes } = request.body
-  const blog = await Blog.findById(request.params.id)
-  if (!blog) {
-    return response.status(404).end()
-  }
-  blog.title = title || blog.title
-  blog.author = author || blog.author
-  blog.url = url || blog.url
-  blog.likes = likes !== undefined ? likes : blog.likes
+blogsRouter.put('/:id', userExtractor, async (request, response) => {
+  try {
+    const { title, author, url, likes } = request.body
+    const user = request.user
 
-  const updatedBlog = await blog.save();
+    if (!user) {
+      return response.status(401).json({ error: 'invalid user or token' })
+    }
 
-  if (updatedBlog) {
+    const blog = await Blog.findById(request.params.id)
+    if (!blog) {
+      return response.status(404).end()
+    }
+
+    blog.title = title || blog.title
+    blog.author = author || blog.author
+    blog.url = url || blog.url
+    blog.likes = likes !== undefined ? likes : blog.likes
+
+    const updatedBlog = await blog.save()
+
+    await updatedBlog.populate('user', { username: 1, name: 1 })
+
     response.json(updatedBlog)
     logger.info('blog was updated', updatedBlog)
+  } catch (error) {
+    next(error)
   }
+
 })
 
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
-    
+
   const user = request.user
 
-  if(!user){
-    return response.status(401).json({error:'invalid user or token'})
+  if (!user) {
+    return response.status(401).json({ error: 'invalid user or token' })
   }
 
   const blog = await Blog.findById(request.params.id)
 
-  if(!blog){
-    return response.status(404).json({error:'blog not found!'})
+  if (!blog) {
+    return response.status(404).json({ error: 'blog not found!' })
   }
 
-  if(blog.user.toString() !== user.id.toString()){
-    return response.status(401).json({error: 'only the creator can delete this blog'})
+  if (blog.user.toString() !== user.id.toString()) {
+    return response.status(401).json({ error: 'only the creator can delete this blog' })
   }
 
   await Blog.findByIdAndDelete(request.params.id)

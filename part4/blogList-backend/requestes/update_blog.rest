@@ -8,9 +8,10 @@ Content-Type: application/json
     "likes" : 6
 }
 ###
-PuT http://localhost:3003/api/blogs/69c501953028f145fe9bc7d7
+PuT http://localhost:3003/api/blogs/69e64696cb44c95e9366d9e2
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2OWUwYjYxOGI0ZmM2NmE2YTZkNDQzZDQiLCJpYXQiOjE3NzY5NzMzMTgsImV4cCI6MTc3Njk3NjkxOH0.fYOZXfMWTgBLptQv3Mi7XXOayq4Mv5pePVzj5lZWq68
 
 {
-    "likes" : 17
+    "likes" : 5
 }
