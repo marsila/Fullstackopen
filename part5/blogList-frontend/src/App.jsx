@@ -77,19 +77,21 @@ function App() {
   const updateBlogLikes = async (id, blogObject) => {
     try {
       const updatedBlog = await blogService.updateBlogLikes(id, blogObject);
-      setBlogs((prevBlogs) =>
-        prevBlogs.map((blog) => (blog.id !== id ? blog : updatedBlog)),
-      );
+      setBlogs((prevBlogs) => {
+        const updatedBlogs = prevBlogs.map((blog) =>
+          blog.id !== id ? blog : updatedBlog,
+        );
+        return updatedBlogs.sort((a, b) => b.likes - a.likes)
+      });
 
       notify(`The blog likes was updated!`, "success");
     } catch (error) {
-      
-      const status = error.response?.status ;
-      console.log('error status', status)
+      const status = error.response?.status;
+      console.log("error status", status);
       const errorMessage = error.response?.data?.error;
-      console.log('error msg', errorMessage)
+      console.log("error msg", errorMessage);
 
-      if (status === 401 || errorMessage ==='jwt expired') {
+      if (status === 401 || errorMessage === "jwt expired") {
         notify("your session has expiered, please login again", "error");
         handleUserLogout();
       } else {
@@ -113,13 +115,16 @@ function App() {
             <Togglable buttonLabel="create new blog">
               <CreateBlog createNewBlog={createNewBlog} />
             </Togglable>
-            {blogs.map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                updateBlogLikes={updateBlogLikes}
-              />
-            ))}
+            {blogs
+              .toSorted((a, b) => b.likes - a.likes)
+              .map((blog) => (
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  updateBlogLikes={updateBlogLikes}
+                />
+              ))
+            }
           </div>
         </>
       )}
