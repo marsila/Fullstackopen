@@ -73,6 +73,30 @@ function App() {
       notify(`new blog wasn't created, some fields are missing!`, "error");
     }
   };
+
+  const updateBlogLikes = async (id, blogObject) => {
+    try {
+      const updatedBlog = await blogService.updateBlogLikes(id, blogObject);
+      setBlogs((prevBlogs) =>
+        prevBlogs.map((blog) => (blog.id !== id ? blog : updatedBlog)),
+      );
+
+      notify(`The blog likes was updated!`, "success");
+    } catch (error) {
+      
+      const status = error.response?.status ;
+      console.log('error status', status)
+      const errorMessage = error.response?.data?.error;
+      console.log('error msg', errorMessage)
+
+      if (status === 401 || errorMessage ==='jwt expired') {
+        notify("your session has expiered, please login again", "error");
+        handleUserLogout();
+      } else {
+        notify(`Couldn't update the likes of the blog!`, "error");
+      }
+    }
+  };
   return (
     <>
       <Notifications message={messageForUser} />
@@ -90,7 +114,11 @@ function App() {
               <CreateBlog createNewBlog={createNewBlog} />
             </Togglable>
             {blogs.map((blog) => (
-              <Blog key={blog.id} blog={blog}/>
+              <Blog
+                key={blog.id}
+                blog={blog}
+                updateBlogLikes={updateBlogLikes}
+              />
             ))}
           </div>
         </>
