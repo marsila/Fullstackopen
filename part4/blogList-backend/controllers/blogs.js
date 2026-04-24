@@ -4,7 +4,7 @@ const logger = require('../utils/logger')
 const userExtractor = require('../utils/middleware').userExtractor
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('user')
+  const blogs = await Blog.find({}).populate('user',{username :1, name: 1})
   response.json(blogs)
 })
 
@@ -43,6 +43,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   })
 
   const savedBlog = await blog.save()
+  await savedBlog.populate('user',{username:1, name:1})
 
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
