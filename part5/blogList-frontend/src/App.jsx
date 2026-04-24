@@ -3,7 +3,7 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import LoginForm from "./components/loginForm";
-import CreateBlog from "./components/CreatBlog";
+import CreateBlog from "./components/CreateBlog";
 import Notifications from "./components/Notifications";
 import Togglable from "./components/Togglable";
 
@@ -77,22 +77,42 @@ function App() {
   const updateBlogLikes = async (id, blogObject) => {
     try {
       const updatedBlog = await blogService.updateBlogLikes(id, blogObject);
-      setBlogs((prevBlogs) => {
-        const updatedBlogs = prevBlogs.map((blog) =>
-          blog.id !== id ? blog : updatedBlog,
-        );
-        return updatedBlogs.sort((a, b) => b.likes - a.likes)
-      });
+
+      setBlogs((prevBlogs) =>
+        prevBlogs.map((blog) => (blog.id !== id ? blog : updatedBlog)),
+      );
 
       notify(`The blog likes was updated!`, "success");
     } catch (error) {
-      const status = error.response?.status;      
+      const status = error.response?.status;
 
       if (status === 401 || status === 500) {
         notify("your session has expiered, please login again", "error");
         handleUserLogout();
       } else {
         notify(`Couldn't update the likes of the blog!`, "error");
+      }
+    }
+  };
+
+  const removeBlog = async (id) => {
+    const blogToDelete = blogs.find((blog) => blog.id === id);
+    try {
+      if (!blogToDelete) {
+        return notify("Somthing went wrong, please try agin later", "error");
+      }
+      await blogService.deleteBlog(id);
+      setBlogs((blogs) => blogs.filter((b) => b.id !== id));
+      notify("The blog was removed!", "success");
+    } catch (error) {
+      const status = error.response?.status;
+      if (status === 401) {
+        notify(
+          `Only "${blogToDelete.user.username}" can delete this Blog`,
+          "error",
+        );
+      } else if (status === 404) {
+        notify("The blog is already removed!", "error");
       }
     }
   };
@@ -119,9 +139,10 @@ function App() {
                   key={blog.id}
                   blog={blog}
                   updateBlogLikes={updateBlogLikes}
+                  removeBlog={removeBlog}
+                  loggedUser={user.username}
                 />
-              ))
-            }
+              ))}
           </div>
         </>
       )}
