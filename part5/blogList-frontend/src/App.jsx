@@ -86,12 +86,9 @@ function App() {
 
       notify(`The blog likes was updated!`, "success");
     } catch (error) {
-      const status = error.response?.status;
-      console.log("error status", status);
-      const errorMessage = error.response?.data?.error;
-      console.log("error msg", errorMessage);
+      const status = error.response?.status;      
 
-      if (status === 401 || errorMessage === "jwt expired") {
+      if (status === 401 || status === 500) {
         notify("your session has expiered, please login again", "error");
         handleUserLogout();
       } else {
