@@ -11,10 +11,8 @@ const Blog = ({ blog, updateBlogLikes }) => {
   const updateLikes = () => {
     const newBlog = {
       ...blog,
-      likes: blog.likes + 1,
-      user: blog.user.id,
+      likes: blog.likes + 1
     };
-    console.log("newBlog", newBlog);
 
     updateBlogLikes(blog.id, newBlog);
   };
@@ -26,15 +24,14 @@ const Blog = ({ blog, updateBlogLikes }) => {
       </div>
       <div style={showDetails} className="blogDetails">
         <p>
-          {blog.title} <button onClick={toggleBlogDetails}>hide</button>
+          title: {blog.title} <button onClick={toggleBlogDetails}>hide</button>
         </p>
-        <p>{blog.url}</p>
+        <p>url: {blog.url}</p>
         <p>
-          {blog.likes} <button onClick={updateLikes}>like</button>
+          likes: {blog.likes} <button onClick={updateLikes}>like</button>
         </p>
         <p>
-          {blog.author}
-          {blog.user.id}
+          author: {blog.author}
         </p>
       </div>
     </>
