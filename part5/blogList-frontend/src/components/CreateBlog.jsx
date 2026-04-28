@@ -1,29 +1,31 @@
-import { useState } from "react";
+import { useState } from 'react'
+import PropTypes from 'prop-types'
+
 const CreateBlog = ({ createNewBlog }) => {
   const [blog, setBlog] = useState({
-    title: "",
-    author: "",
-    url: "",
-  });
+    title: '',
+    author: '',
+    url: '',
+  })
 
   const handleNewBlogInput = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setBlog((prevBlog) => ({
       ...prevBlog,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const addNewBlog =(e) => {
-    e.preventDefault();
+    e.preventDefault()
     createNewBlog(blog)
-    setBlog({ title: "", author: "", url: "" });
-  };
+    setBlog({ title: '', author: '', url: '' })
+  }
   return (
     <div>
       <form onSubmit={addNewBlog}>
         <label htmlFor="title">
-          Title:{" "}
+          Title:{' '}
           <input
             type="text"
             name="title"
@@ -34,7 +36,7 @@ const CreateBlog = ({ createNewBlog }) => {
         </label>
         <br />
         <label htmlFor="author">
-          Author:{" "}
+          Author:{' '}
           <input
             type="text"
             name="author"
@@ -45,7 +47,7 @@ const CreateBlog = ({ createNewBlog }) => {
         </label>
         <br />
         <label htmlFor="author">
-          URL:{" "}
+          URL:{' '}
           <input
             type="text"
             name="url"
@@ -58,7 +60,10 @@ const CreateBlog = ({ createNewBlog }) => {
         <button>submit</button>
       </form>
     </div>
-  );
-};
+  )
+}
+CreateBlog.propTypes = {
+  createNewBlog: PropTypes.fbunc.isRequired
+}
 
-export default CreateBlog;
+export default CreateBlog
