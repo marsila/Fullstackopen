@@ -63,7 +63,7 @@ const CreateBlog = ({ createNewBlog }) => {
   )
 }
 CreateBlog.propTypes = {
-  createNewBlog: PropTypes.fbunc.isRequired
+  createNewBlog: PropTypes.func.isRequired
 }
 
 export default CreateBlog
