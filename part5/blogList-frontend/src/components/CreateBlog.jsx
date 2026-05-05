@@ -46,7 +46,7 @@ const CreateBlog = ({ createNewBlog }) => {
           />
         </label>
         <br />
-        <label htmlFor="author">
+        <label htmlFor="url">
           URL:{' '}
           <input
             type="text"
