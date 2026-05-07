@@ -124,10 +124,9 @@ function App() {
         <LoginForm loginSubmit={handleSubmit} />
       ) : (
         <>
-          <h1>Blogs App</h1>
           <div>
             <h3>
-              {user.name} logged in{' '}
+              {user.name} logged in
               <button onClick={handleUserLogout}>logout</button>
             </h3>
             <Togglable buttonLabel="create new blog">
