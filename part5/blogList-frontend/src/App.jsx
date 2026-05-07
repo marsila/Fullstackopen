@@ -118,12 +118,13 @@ function App() {
   }
   return (
     <>
+      <h1>Blogs App</h1>
       <Notifications message={messageForUser} />
       {user === null ? (
         <LoginForm loginSubmit={handleSubmit} />
       ) : (
         <>
-          <h1>Blogs</h1>
+          <h1>Blogs App</h1>
           <div>
             <h3>
               {user.name} logged in{' '}
