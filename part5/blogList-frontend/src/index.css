@@ -16,10 +16,16 @@ form input {
   padding: 0.2rem;
   margin: 0.2rem;
 }
-.blogDetails {
+.blog {
   border: 2px solid rgb(175, 63, 245);
   border-radius: 5px;
   padding: .2rem;
+}
+.blogDetails {
+  border: 2px solid rgb(92, 19, 138);
+  border-radius: 5px;
+  padding: .2rem;
+  background-color: rgb(250, 209, 251);
 }
 button{
   border-radius: 5px;

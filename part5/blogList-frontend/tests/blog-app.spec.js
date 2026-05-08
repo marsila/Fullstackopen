@@ -40,5 +40,14 @@ test.describe('Blog app', () => {
       await expect(page.getByText('a new blog was created: e2e test blog, by testUser')).toBeVisible()
       await expect(page.getByText('e2e test blog').first()).toBeVisible()
     })
+
+    test('ablog can be liked', async({page}) => {
+      await createBlog(page, 'like a blog', 'testUser', 'url.test')
+      const blogElement = page.locator('.blog').filter({ hasText: 'like a blog' })
+      await blogElement.getByRole('button',{name:'view'}).click()
+      const blogDetailsElement = page.locator('.blogDetails').filter({ hasText: 'like a blog' })
+      await blogDetailsElement.getByRole('button',{name:'like'}).click()
+      await expect(blogDetailsElement.getByText('likes: 1')).toBeVisible()
+    })
   })
 })
