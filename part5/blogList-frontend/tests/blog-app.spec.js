@@ -49,5 +49,23 @@ test.describe('Blog app', () => {
       await blogDetailsElement.getByRole('button',{name:'like'}).click()
       await expect(blogDetailsElement.getByText('likes: 1')).toBeVisible()
     })
+
+    test('a creater of a blog can delete it', async({page}) => {
+      const title = 'a blog to be deleted'
+      await createBlog(page, title, 'testUser','url.test')
+      page.on('dialog', async(dialog) => {
+        if(dialog.type() === 'confirm'){
+          await dialog.accept()
+          //OR
+          //await dialog.dismiss()
+        }
+      })
+      const blogElement = page.locator('.blog').filter({ hasText: title })
+      await blogElement.getByRole('button',{name:'view'}).click()
+      const blogDetailsElement = page.locator('.blogDetails').filter({ hasText: title })
+      await blogDetailsElement.getByRole('button',{name:'remove'}).click()
+      await expect(page.getByText(/The blog was removed!/i)).toBeVisible()
+      await expect(page.getByText(title)).not.toBeVisible()
+    })
   })
 })
