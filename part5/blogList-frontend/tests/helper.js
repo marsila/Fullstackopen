@@ -6,10 +6,23 @@ const loginWith = async (page, username, password) => {
 
 const createBlog = async(page, title, author, url) => {
   await page.getByRole('button',{name:/create new blog/i}).click()
+
   await page.getByLabel(/title/i).fill(title)
   await page.getByLabel(/author/i).fill(author)
   await page.getByLabel(/url/i).fill(url)
   await page.getByRole('button',{name:'submit'}).click()
+
+  await page.locator('.blog').filter({ hasText: title }).waitFor()
 }
 
-export {loginWith, createBlog}
+const createAnotherBlog = async(page, title, author, url) => {
+  await page.getByLabel(/title/i).fill(title)
+  await page.getByLabel(/author/i).fill(author)
+  await page.getByLabel(/url/i).fill(url)
+
+  await page.getByRole('button',{name:'submit'}).click()
+
+  await page.locator('.blog').filter({ hasText: title }).waitFor()
+}
+
+export {loginWith, createBlog, createAnotherBlog}
