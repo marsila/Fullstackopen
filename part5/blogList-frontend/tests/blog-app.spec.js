@@ -11,6 +11,13 @@ test.describe('Blog app', () => {
         password: '1234'
       }
     })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'new user',
+        username: 'newUser',
+        password: 'newPass'
+      }
+    })
     await page.goto('http://localhost:5173')
   })
 
@@ -20,7 +27,7 @@ test.describe('Blog app', () => {
 
   test.describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await await loginWith(page, 'testUser', '1234')
+      await loginWith(page, 'testUser', '1234')
       await expect(page.locator('h3').getByText(/test user logged in/i)).toBeVisible()
     })
 
@@ -66,6 +73,18 @@ test.describe('Blog app', () => {
       await blogDetailsElement.getByRole('button',{name:'remove'}).click()
       await expect(page.getByText(/The blog was removed!/i)).toBeVisible()
       await expect(page.getByText(title)).not.toBeVisible()
+    })
+
+    test('only creater can see remove button', async({page}) => {
+      const title = 'No remove buuton'
+      await createBlog(page, title, 'testUser','url.test')
+      await page.getByRole('button', {name: 'logout'}).click()
+      await expect(page.getByText(/log in to application/i)).toBeVisible()
+      await loginWith(page,'newUser','newPass')
+      await expect(page.locator('h3').getByText(/new user logged in/i)).toBeVisible()
+      const blogElement = page.locator('.blog').filter({ hasText: title })
+      await blogElement.getByRole('button', {name:'view'}).click()
+      await expect(page.locator('.blogDetails').filter({ hasText: title }).getByRole('button',{name:'remove'})).not.toBeVisible()
     })
   })
 })
