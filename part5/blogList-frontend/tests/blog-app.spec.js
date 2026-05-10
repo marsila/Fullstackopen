@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test'
 import { createAnotherBlog, createBlog, loginWith } from './helper'
-import { describe } from 'node:test'
 
 test.describe('Blog app', () => {
   test.beforeEach(async ({ page, request }) => {
@@ -97,7 +96,7 @@ test.describe('Blog app', () => {
       test('blogs are arranged in the order according to the likes', async ({ page }) => {
 
         const blog1 = page.locator('.blog').filter({ hasText: 'blog 1' })
-        const blog2 = page.locator('.blog').filter({ hasText: 'blog 2' })
+        const _blog2 = page.locator('.blog').filter({ hasText: 'blog 2' })
         const blog3 = page.locator('.blog').filter({ hasText: 'blog 3' })
 
         await blog3.getByRole('button', { name: 'view' }).click()
