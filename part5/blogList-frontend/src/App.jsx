@@ -80,6 +80,7 @@ function App() {
         `a new blog was created: ${newBlog.title}, by ${newBlog.author}`,
         'success',
       )
+      navigate('/')
     } catch {
       notify('new blog wasn\'t created, some fields are missing!', 'error')
     }
@@ -115,6 +116,7 @@ function App() {
       await blogService.deleteBlog(id)
       setBlogs((blogs) => blogs.filter((b) => b.id !== id))
       notify('The blog was removed!', 'success')
+      navigate('/')
     } catch (error) {
       const status = error.response?.status
       if (status === 401) {
@@ -132,6 +134,7 @@ function App() {
       <h1>Blogs App</h1>
       <div>
         <Link to ='/'>blogs</Link>{'  '}
+        {user !== null && <Link to ='/createBlog'>new Blog</Link>}
         {user === null ?
           (<Link to= '/login'>Login</Link>
           ) :(
@@ -160,23 +163,14 @@ function App() {
             />
           }
         />
+        <Route
+          path='/createBlog'
+          element={
+            <CreateBlog createNewBlog={createNewBlog}/>
+          }
+        />
       </Routes>
-      {/* <Notifications message={messageForUser} />
-      {user === null ? (
-        <LoginForm loginSubmit={handleSubmit} />
-      ) : (
-        <>
-          <div>
-            <h3>
-              {user.name} logged in
-              <button onClick={handleUserLogout}>logout</button>
-            </h3>
-            <Togglable buttonLabel="create new blog">
-              <CreateBlog createNewBlog={createNewBlog} />
-            </Togglable>
-          </div>
-        </>
-      )} */}
+      <Notifications message={messageForUser}/>
     </>
   )
 }
