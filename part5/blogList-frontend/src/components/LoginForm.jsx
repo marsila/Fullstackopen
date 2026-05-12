@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 const LoginForm = ({loginSubmit}) => {
@@ -6,6 +7,7 @@ const LoginForm = ({loginSubmit}) => {
     username: '',
     password: '',
   })
+  const navigate = useNavigate()
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setLoginFormData((prevLoginForm) => ({
@@ -18,6 +20,7 @@ const LoginForm = ({loginSubmit}) => {
     e.preventDefault()
     loginSubmit(loginFormData)
     setLoginFormData({ username: '', password: '' })
+    navigate('/blogs')
   }
   return (
     <>

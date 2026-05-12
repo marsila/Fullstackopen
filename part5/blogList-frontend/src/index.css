@@ -20,6 +20,7 @@ form input {
   border: 2px solid rgb(175, 63, 245);
   border-radius: 5px;
   padding: .2rem;
+  margin: .2rem;
 }
 .blogDetails {
   border: 2px solid rgb(92, 19, 138);
@@ -33,6 +34,9 @@ button{
   color: rgb(33, 28, 133);
   border: 0;
   background-color: rgb(245, 185, 248);
+}
+ul{
+  list-style: none;
 }
 .notification {
   border-radius: 3px;

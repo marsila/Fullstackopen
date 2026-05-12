@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Routes, Link, Route, useNavigate } from 'react-router-dom'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -6,6 +7,7 @@ import LoginForm from './components/loginForm'
 import CreateBlog from './components/CreateBlog'
 import Notifications from './components/Notifications'
 import Togglable from './components/Togglable'
+import BlogList from './components/BlogList'
 
 function App() {
   const [blogs, setBlogs] = useState([])
@@ -19,6 +21,7 @@ function App() {
     }
     return null
   })
+  const navigate  = useNavigate()
 
   const [messageForUser, setMessageForUser] = useState(null)
   //Helper function to extract error messages and notifications
@@ -55,9 +58,11 @@ function App() {
     }
   }
 
-  const handleUserLogout = () => {
+  const handleUserLogout = (e) => {
+    e.preventDefault()
     window.localStorage.removeItem('loggedUser')
     setUser(null)
+    navigate('/login')
   }
 
   const createNewBlog = async (blogObject) => {
@@ -119,7 +124,31 @@ function App() {
   return (
     <>
       <h1>Blogs App</h1>
-      <Notifications message={messageForUser} />
+      <div>
+        <Link to ='/'>blogs</Link>{'  '}
+        {user === null ? 
+          (<Link to= '/login'>Login</Link>
+          ) :(
+            <button onClick={handleUserLogout}>Logout</button>
+          )
+        }
+      </div>
+      <Routes>
+        <Route
+          path='/'
+          element = {
+            <BlogList blogs={blogs}/>
+          }/>
+        <Route
+          path='/login'
+          element ={<LoginForm loginSubmit={handleSubmit}/>}
+        />
+        {/* <Route
+          path='/blogs/:id'
+          element={<Blog/>}
+        /> */}
+      </Routes>
+      {/* <Notifications message={messageForUser} />
       {user === null ? (
         <LoginForm loginSubmit={handleSubmit} />
       ) : (
@@ -132,20 +161,9 @@ function App() {
             <Togglable buttonLabel="create new blog">
               <CreateBlog createNewBlog={createNewBlog} />
             </Togglable>
-            {blogs
-              .toSorted((a, b) => b.likes - a.likes)
-              .map((blog) => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  updateBlogLikes={updateBlogLikes}
-                  removeBlog={removeBlog}
-                  loggedUser={user.username}
-                />
-              ))}
           </div>
         </>
-      )}
+      )} */}
     </>
   )
 }
