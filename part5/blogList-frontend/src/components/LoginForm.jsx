@@ -20,7 +20,7 @@ const LoginForm = ({loginSubmit}) => {
     e.preventDefault()
     loginSubmit(loginFormData)
     setLoginFormData({ username: '', password: '' })
-    navigate('/blogs')
+    navigate('/')
   }
   return (
     <>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Routes, Link, Route, useNavigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Link, Route, useNavigate, useMatch } from 'react-router-dom'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -11,6 +11,11 @@ import BlogList from './components/BlogList'
 
 function App() {
   const [blogs, setBlogs] = useState([])
+
+  const match = useMatch('/blogs/:id')
+  const blog = match
+    ? blogs.find(b => b.id === match.params.id)
+    : null
 
   const [user, setUser] = useState(() => {
     const loggeduUserJSON = window.localStorage.getItem('loggedUser')
@@ -50,6 +55,7 @@ function App() {
 
       blogService.setToken(newUser.token)
       setUser(newUser)
+      navigate('/')
     } catch {
       notify(
         ' wrong credentials! please check the user name and password and try again',
@@ -126,7 +132,7 @@ function App() {
       <h1>Blogs App</h1>
       <div>
         <Link to ='/'>blogs</Link>{'  '}
-        {user === null ? 
+        {user === null ?
           (<Link to= '/login'>Login</Link>
           ) :(
             <button onClick={handleUserLogout}>Logout</button>
@@ -143,10 +149,17 @@ function App() {
           path='/login'
           element ={<LoginForm loginSubmit={handleSubmit}/>}
         />
-        {/* <Route
+        <Route
           path='/blogs/:id'
-          element={<Blog/>}
-        /> */}
+          element={
+            <Blog
+              blog = {blog}
+              updateBlogLikes={updateBlogLikes}
+              removeBlog={removeBlog}
+              loggedUser={user}
+            />
+          }
+        />
       </Routes>
       {/* <Notifications message={messageForUser} />
       {user === null ? (
