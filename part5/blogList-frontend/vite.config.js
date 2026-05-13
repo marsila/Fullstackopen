@@ -13,6 +13,10 @@ export default defineConfig({
     },
   },
   test : {
+    exclude: [
+      '**/node_modules/**',
+      '**/tests/**', // this line to ignore the Playwright folder
+    ],
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/testSetup.js',

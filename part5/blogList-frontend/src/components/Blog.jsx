@@ -28,7 +28,7 @@ const Blog = ({ blog, updateBlogLikes, removeBlog, loggedUser }) => {
         <h2>title: {blog.title}</h2>
         <a href={blog.url} target="_blank" rel="noreferrer">url: {blog.url}</a>
         <p>
-          likes: {blog.likes} {(loggedUser !== null)&&(<button onClick={updateLikes}>like</button>)}
+          likes: {blog.likes} {loggedUser && <button onClick={updateLikes}>like</button>}
         </p>
         <p>author: {blog.author}</p>
         {(blog.user?.username === loggedUser?.username)&&(<button onClick={deleteBlog}>remove</button>)}

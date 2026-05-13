@@ -16,53 +16,101 @@ test('first test', () => {
 
 })
 
-test('view/hide details button', async()=>{
+test('ununauthenticated users see only blog info with no buttons', async()=>{
   const blog ={
-    title:'button test',
+    title:'ununauthenticated users test',
     author:'admin',
     likes:4,
     url:'admin-blogs.com'
   }
-  const mockHandler = vi.fn()
-  render(<Blog blog={blog} toggleBlogDetails={mockHandler}/>)
 
-  const user = userEvent.setup()
-  const button = screen.getByText('view')
-  await user.click(button)
-  const element1 = screen.getByText('admin-blogs.com',{exact:false})
+  render(<Blog blog={blog} loggedUser={null}/>)
+
+  const element1 = screen.getByText('ununauthenticated users test',{exact:false})
   const element2 = screen.getByText('likes: 4',{exact:false})
-  expect(element1,element2).toBeDefined()
+  const element3 = screen.queryByRole('button',{name:'like'})
+  expect(element1).toBeDefined()
+  expect(element2).toBeDefined()
+  expect(element3).toBeNull()
 
 })
 
-test('cliking like button twice, calling the click handler twice', async () => {
+test('Authenticated users who are not the blog’s creator are shown only the like button', async () => {
   const blog = {
     title:'like button test',
     author:'admin',
     url: 'admin-blogs.com',
     likes:0,
     user:{
-      id:'69e0b618b4fc66a6a6d443d4',
+      id:'6a009d8da05bb09e7b417ad8',
       username:'admin'
     },
     id:'fakeblog1'
   }
 
-  const mockHandler = vi.fn()
+  const mockUpdate = vi.fn()
+
+  const loggedUser ={
+    id:'6a009d862242731fb2d6883c',
+    username:'member3'
+  }
   render(<Blog
     blog={blog}
-    updateBlogLikes={mockHandler}
-    loggedUser='admin'
+    updateBlogLikes={mockUpdate}
+    loggedUser={loggedUser}
   />)
 
   const user = userEvent.setup()
-  const viewButton = screen.getByText('view')
-  await user.click(viewButton)
   const likeButton = screen.getByText('like')
   await user.click(likeButton)
-  await user.click(likeButton)
 
-  expect(mockHandler.mock.calls).toHaveLength(2)
+  const removeBtn = screen.queryByRole('button', {name:'remove'})
+
+  expect(mockUpdate.mock.calls).toHaveLength(1)
+  expect(removeBtn).toBeNull()
+})
+
+test('The blog’s creator is also shown the delete button', async () => {
+  const blog = {
+    title:'like button test',
+    author:'admin',
+    url: 'admin-blogs.com',
+    likes:0,
+    user:{
+      id:'6a009d8da05bb09e7b417ad8',
+      username:'admin'
+    },
+    id:'fakeblog1'
+  }
+  const loggedUser = {
+    id:'6a009d8da05bb09e7b417ad8',
+    username:'admin'
+  }
+
+  const mockUpdate = vi.fn()
+  const mockDelete = vi.fn()
+  //click ok on the confirm dialog
+  window.confirm = vi.fn(() => true)
+
+  render(<Blog
+    blog={blog}
+    updateBlogLikes={mockUpdate}
+    removeBlog={mockDelete}
+    loggedUser= {loggedUser}
+  />)
+
+  const user = userEvent.setup()
+  const likeButton = screen.getByText('like')
+  expect(likeButton).toBeInTheDocument()
+
+  await user.click(likeButton)
+  expect(mockUpdate.mock.calls).toHaveLength(1)
+
+  const removeBtn = screen.queryByRole('button', {name:'remove'})
+  expect(removeBtn).toBeInTheDocument()
+
+  await user.click(removeBtn)
+  expect(mockDelete.mock.calls).toHaveLength(1)
 })
 
 test('create new blog', async() => {
