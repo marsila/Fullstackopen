@@ -1,10 +1,15 @@
+import { useCounters } from "../store"
 const Statistics = () => {
-  const good = 0
-  const neutral = 0
-  const bad = 0
-  const all = 0
-  const average = 0
-  const positive = 0
+  const {good, neutral, bad} = useCounters()
+  const all = good + neutral + bad
+  if (all === 0){
+    return(<>
+      <h2>Statistics</h2>
+      <p>No feedback was givin</p>
+    </>
+    )}
+  const average = all===0 ? 0 : ((good - bad) / all).toFixed(1);
+  const positive =  all ===0 ? 0 : (((good / all) * 100).toFixed(1)) + " %";
   
   return (
     <div>
