@@ -1,34 +1,14 @@
+import AnecdoteForm from "./components/AnecdoteForm"
+import AnecdoteList from "./components/AnecdoteList"
 
-import { useAnecdotes } from './store'
-import {useAnecdoteActions} from './store'
 
-const App = () => {
-  const anecdotes = useAnecdotes()
-  const {increaseVotes} = useAnecdoteActions()
-
-  const vote = id => {
-    increaseVotes(id)
-  }
+const App = () => { 
 
   return (
     <div>
       <h2>Anecdotes</h2>
-      {anecdotes.map(anecdote => (
-        <div key={anecdote.id}>
-          <div>{anecdote.content}</div>
-          <div>
-            has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
-          </div>
-        </div>
-      ))}
-      <h2>create new</h2>
-      <form>
-        <div>
-          <input />
-        </div>
-        <button>create</button>
-      </form>
+      <AnecdoteList/>
+      <AnecdoteForm/>
     </div>
   )
 }
