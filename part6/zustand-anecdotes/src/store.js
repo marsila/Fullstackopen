@@ -1,6 +1,5 @@
 
 import { create } from 'zustand'
-import anecdotes from './srvices/anecdotes'
 import anecdotesService from  './srvices/anecdotes'
 
 
@@ -15,11 +14,12 @@ const useAnecdoteStore = create((set) => ({
         )
       })
     ),
-    add : anecdote => set(
-      state => ({
-        anecdotes : [...state.anecdotes , anecdote]
-      })
-    ),
+    add : async(content) => {
+      const newAnecdote = await anecdotesService.createNew(content)
+      set(state => ({
+        anecdotes : [...state.anecdotes , newAnecdote]
+      }))
+    },
     setFilter: value => set(() => ({ filter: value })),
     initialize : async () => {
       const anecdotes = await anecdotesService.getAll()
